@@ -1,4 +1,5 @@
-from exceptions import UnimplementedException
+from myutman.exceptions import UnimplementedException
+from myutman.exceptions import IncorrectDataException
 import numpy as np
 
 class StreamingAlgo:
@@ -34,6 +35,8 @@ class WindowStreamingAlgo(StreamingAlgo):
 
     def __init__(self, window_count, window_sizes, threshholds, dist = kholmogorov_smirnov_dist):
         super().__init__()
+        if window_count != len(window_sizes) or window_count != len(threshholds):
+            raise IncorrectDataException()
         self.window_count = window_count
         self.reference_windows = [[] for i in range(window_count)]
         self.sliding_windows = [[] for i in range(window_count)]

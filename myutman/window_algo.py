@@ -3,7 +3,7 @@ from myutman.distributed import RoundrobinStreamingAlgo
 
 import numpy as np
 
-def kholmogorov_smirnov_dist(reference_window, sliding_window):
+def kolmogorov_smirnov_dist(reference_window, sliding_window):
     lst = []
     for v in reference_window:
         lst.append((v, - 1 / len(reference_window)))
@@ -19,7 +19,7 @@ def kholmogorov_smirnov_dist(reference_window, sliding_window):
 
 class WindowPair:
 
-    def __init__(self, sizes, dist=kholmogorov_smirnov_dist):
+    def __init__(self, sizes, dist=kolmogorov_smirnov_dist):
         self.sizes = sizes
         self.__dist = dist
         self.reference = []
@@ -52,7 +52,7 @@ class WindowPair:
 
 class WindowStreamingAlgo(StreamingAlgo):
 
-    def __init__(self, p, l, window_sizes, dist=kholmogorov_smirnov_dist):
+    def __init__(self, p, l, window_sizes, dist=kolmogorov_smirnov_dist):
         super().__init__(p)
         self.l = l
         self.window_count = len(window_sizes)
@@ -81,7 +81,7 @@ class WindowStreamingAlgo(StreamingAlgo):
                 pair.clear()
 
 class WindowRoundrobinStreamingAlgo(RoundrobinStreamingAlgo):
-    def __init__(self, p, n_nodes, l, window_sizes, dist=kholmogorov_smirnov_dist):
+    def __init__(self, p, n_nodes, l, window_sizes, dist=kolmogorov_smirnov_dist):
         single_threads = [WindowStreamingAlgo(p, l, window_sizes, dist) for _ in range(n_nodes)]
         super(WindowRoundrobinStreamingAlgo, self).__init__(p, single_threads)
 
@@ -102,7 +102,7 @@ if __name__ == '__main__':
     array = list(np.random.normal(0, 1, size = 1000))
     array += list(np.random.normal(0.2, 3, size = 1000))
 
-    #print(kholmogorov_smirnov_dist(np.random.normal(0, 1, size = 100), np.random.normal(100, 1, size = 100)))
+    #print(kolmogorov_smirnov_dist(np.random.normal(0, 1, size = 100), np.random.normal(100, 1, size = 100)))
     for it, elem in enumerate(array):
         algo.process_element(elem)
         print(algo.get_stat(), algo.get_thresholds())

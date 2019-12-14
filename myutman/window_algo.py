@@ -3,6 +3,7 @@ from myutman.distributed import RoundrobinStreamingAlgo
 
 import numpy as np
 
+
 def kolmogorov_smirnov_dist(reference_window, sliding_window):
     lst = []
     for v in reference_window:
@@ -16,6 +17,7 @@ def kolmogorov_smirnov_dist(reference_window, sliding_window):
         cur += p
         mx = max(mx, abs(cur))
     return mx
+
 
 class WindowPair:
 
@@ -59,7 +61,7 @@ class WindowStreamingAlgo(StreamingAlgo):
         self.window_pairs = [[WindowPair(sizes, dist) for _ in range(l + 1)] for sizes in window_sizes]
         self.__dist = dist
 
-    def process_element(self, element):
+    def process_element(self, element, meta=None):
         for k in range(self.window_count):
             self.window_pairs[k][0].add_point(element)
             for j in range(1, self.l + 1):
@@ -80,6 +82,7 @@ class WindowStreamingAlgo(StreamingAlgo):
             for pair in list_pair:
                 pair.clear()
 
+
 class WindowRoundrobinStreamingAlgo(RoundrobinStreamingAlgo):
     def __init__(self, p, n_nodes, l, window_sizes, dist=kolmogorov_smirnov_dist):
         single_threads = [WindowStreamingAlgo(p, l, window_sizes, dist) for _ in range(n_nodes)]
@@ -87,7 +90,6 @@ class WindowRoundrobinStreamingAlgo(RoundrobinStreamingAlgo):
 
     def fuse(self, stats):
         ans = np.max(stats, axis=0)
-        print(np.array(stats).shape, ans.shape)
         return ans
 
     def get_thresholds(self):
@@ -97,10 +99,28 @@ class WindowRoundrobinStreamingAlgo(RoundrobinStreamingAlgo):
     def test(self):
         return np.any(self.get_thresholds() < self.get_stat()[:,0])
 
+
+class WindowDependentStreamingAlgo(RoundrobinStreamingAlgo):
+    def __init__(self, p, n_nodes, l, window_sizes, dist=kolmogorov_smirnov_dist):
+        single_threads = [WindowStreamingAlgo(p, l, window_sizes, dist) for _ in range(n_nodes)]
+        super(WindowDependentStreamingAlgo, self).__init__(p, single_threads)
+
+    def fuse(self, stats):
+        ans = np.max(stats, axis=0)
+        return ans
+
+    def get_thresholds(self):
+        thresholds = np.quantile(self.get_stat()[:,1:], 1 - self.p, axis=-1)
+        return thresholds
+
+    def test(self):
+        return np.any(self.get_thresholds() < self.get_stat()[:,0])
+
+
 if __name__ == '__main__':
     algo = WindowRoundrobinStreamingAlgo(0.05, 5, 30, [(71, 93), (80, 90), (65, 79)])
-    array = list(np.random.normal(0, 1, size = 1000))
-    array += list(np.random.normal(0.2, 3, size = 1000))
+    array = list(np.random.normal(0, 1, size=1000))
+    array += list(np.random.normal(0.2, 3, size=1000))
 
     #print(kolmogorov_smirnov_dist(np.random.normal(0, 1, size = 100), np.random.normal(100, 1, size = 100)))
     for it, elem in enumerate(array):

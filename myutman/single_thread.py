@@ -1,12 +1,11 @@
 from myutman.exceptions import UnimplementedException
-import numpy as np
 
 class StreamingAlgo:
 
     def __init__(self, p):
         self.p = p
 
-    def process_element(self, element):
+    def process_element(self, element, meta=None):
         raise UnimplementedException()
 
     def get_stat(self):

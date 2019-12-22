@@ -1,5 +1,5 @@
 from myutman.single_thread import StreamingAlgo
-from myutman.distributed import RoundrobinStreamingAlgo
+from myutman.distributed import RoundrobinStreamingAlgo, DependentStreamingAlgo
 
 import numpy as np
 
@@ -20,7 +20,6 @@ def kolmogorov_smirnov_dist(reference_window, sliding_window):
 
 
 class WindowPair:
-
     def __init__(self, sizes, dist=kolmogorov_smirnov_dist):
         self.sizes = sizes
         self.__dist = dist
@@ -53,22 +52,27 @@ class WindowPair:
 
 
 class WindowStreamingAlgo(StreamingAlgo):
-
-    def __init__(self, p, l, window_sizes, dist=kolmogorov_smirnov_dist):
+    def __init__(self, p, l=None, window_sizes=None, dist=kolmogorov_smirnov_dist):
         super().__init__(p)
+        if l is None:
+            l = 30
         self.l = l
+        self.rnd = np.random.RandomState(0)
+        if window_sizes is None:
+            window_sizes = [(50 + self.rnd.choice(30), 50 + self.rnd.choice(30)) for _ in range(3)]
         self.window_count = len(window_sizes)
         self.window_pairs = [[WindowPair(sizes, dist) for _ in range(l + 1)] for sizes in window_sizes]
-        self.__dist = dist
 
     def process_element(self, element, meta=None):
         for k in range(self.window_count):
             self.window_pairs[k][0].add_point(element)
             for j in range(1, self.l + 1):
-                self.window_pairs[k][j].add_point(np.random.uniform(0, 1))
+                self.window_pairs[k][j].add_point(self.rnd.uniform(0, 1))
 
     def get_stat(self):
-        return np.array([[self.window_pairs[i][j].get_stat() for j in range(self.l + 1)] for i in range(self.window_count)])
+        return np.array([
+            [self.window_pairs[i][j].get_stat() for j in range(self.l + 1)] for i in range(self.window_count)
+        ])
 
     def get_thresholds(self):
         thresholds = np.quantile(self.get_stat()[:,1:], 1 - self.p, axis=-1)
@@ -84,7 +88,7 @@ class WindowStreamingAlgo(StreamingAlgo):
 
 
 class WindowRoundrobinStreamingAlgo(RoundrobinStreamingAlgo):
-    def __init__(self, p, n_nodes, l, window_sizes, dist=kolmogorov_smirnov_dist):
+    def __init__(self, p, n_nodes, l=None, window_sizes=None, dist=kolmogorov_smirnov_dist):
         single_threads = [WindowStreamingAlgo(p, l, window_sizes, dist) for _ in range(n_nodes)]
         super(WindowRoundrobinStreamingAlgo, self).__init__(p, single_threads)
 
@@ -100,8 +104,8 @@ class WindowRoundrobinStreamingAlgo(RoundrobinStreamingAlgo):
         return np.any(self.get_thresholds() < self.get_stat()[:,0])
 
 
-class WindowDependentStreamingAlgo(RoundrobinStreamingAlgo):
-    def __init__(self, p, n_nodes, l, window_sizes, dist=kolmogorov_smirnov_dist):
+class WindowDependentStreamingAlgo(DependentStreamingAlgo):
+    def __init__(self, p, n_nodes, l=None, window_sizes=None, dist=kolmogorov_smirnov_dist):
         single_threads = [WindowStreamingAlgo(p, l, window_sizes, dist) for _ in range(n_nodes)]
         super(WindowDependentStreamingAlgo, self).__init__(p, single_threads)
 

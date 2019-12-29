@@ -1,18 +1,23 @@
-from myutman.exceptions import UnimplementedException
+import abc
+from typing import Any
+
 
 class StreamingAlgo:
 
     def __init__(self, p):
         self.p = p
 
-    def process_element(self, element, meta=None):
-        raise UnimplementedException()
+    @abc.abstractmethod
+    def process_element(self, element: float, meta: Any = None) -> None:
+        pass
 
-    def get_stat(self):
-        raise UnimplementedException()
+    @abc.abstractmethod
+    def get_stat(self) -> Any:
+        pass
 
-    def test(self):
-        raise UnimplementedException()
+    @abc.abstractmethod
+    def test(self) -> bool:
+        pass
 
-    def restart(self):
+    def restart(self) -> None:
         pass

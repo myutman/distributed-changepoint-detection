@@ -1,90 +1,76 @@
+from typing import Tuple, List, Dict, Type
+
+from myutman.fuse import Fuse
+from myutman.node_distribution import NodeDistribution
 from myutman.single_thread import StreamingAlgo
 
 from tqdm import tqdm
 import numpy as np
 import matplotlib.pyplot as plt
 
-
-def generate_multichange_sample(size, n_modes=13, probs=None, tau=1000, tau_noise=1, delta=10, delta_noise=0.1):
-    sample = []
-    change_points = []
-    mu = np.arange(n_modes, dtype=np.float64)
-    limit = int(np.random.normal(tau, tau_noise))
-    if probs is None:
-        probs = 1 / np.arange(1, n_modes + 1)
-        probs /= probs.sum()
-    for i in range(size):
-        if i == limit:
-            limit += int(np.random.normal(tau, tau_noise))
-            mu += np.random.normal(delta, delta_noise, size=n_modes)
-            change_points.append(i)
-        mode = np.random.choice(n_modes, p=probs)
-        sample.append((mode, np.random.normal(mu[mode], 1)))
-    return sample, change_points
+from myutman.stand_utils import calc_error, generate_multichange_sample
 
 
-def calc_error(change_points, detected):
-    correct_detection = 0
-    false_detection = 0
-    missed_detection = 0
+class Stand:
+    def __init__(self, algos: List[Type[StreamingAlgo]], fuses: List[Fuse], node_distributions: List[Type[NodeDistribution]]):
+        self.algos = algos
+        self.fuses = fuses
+        self.node_distributions = node_distributions
 
-    j = 0
-    for i, d in enumerate(change_points):
-        # skip all false detections before change_points[i]
-        while j < len(detected) and detected[j] < d:
-            false_detection += 1
-            j += 1
+    def __run_test__(
+            self,
+            p: float,
+            algo: Type[StreamingAlgo],
+            fuse: Fuse,
+            node_distribution_type: Type[NodeDistribution],
+            n_nodes: int,
+            sample: List[Tuple[int, float]],
+            change_points: List[int]
+    ) -> Dict[str, float]:
+        nodes: List[StreamingAlgo] = [algo(p) for _ in range(n_nodes)]
+        detected = []
+        node_distribution = node_distribution_type(n_nodes)
+        for i, (meta, point) in tqdm(enumerate(sample)):
+            node_id = node_distribution.get_node_index(meta)
+            nodes[node_id].process_element(point, meta)
+            if fuse(p, nodes):
+                detected.append(i)
+                for node in nodes:
+                    node.restart()
 
-        # if change_points[i] and change_points[i+1] occur without detection then a missed detection
-        if j == len(detected) or (i + 1 < len(change_points) and change_points[i + 1] <= detected[j]):
-            missed_detection += 1
-        else:
-            correct_detection += 1
-            j += 1
+        return calc_error(change_points, detected)
 
-    return {'TDR': correct_detection / len(change_points), 'MDR': 1 - correct_detection / len(change_points), 'FDR': 1 - correct_detection / len(detected)}
+    def compare_distibuted_algorithms_plots(self, p: float = 0.05, rng: List[int] = range(1, 3)):
+        tdrs = dict([(f'{algo.__name__} {node_distribution.__name__}', []) for algo in self.algos for node_distribution in self.node_distributions])
+        mdrs = dict([(f'{algo.__name__} {node_distribution.__name__}', []) for algo in self.algos for node_distribution in self.node_distributions])
+        fdrs = dict([(f'{algo.__name__} {node_distribution.__name__}', []) for algo in self.algos for node_distribution in self.node_distributions])
 
+        sample, changepoints = generate_multichange_sample(100000)
 
-def run_test(algo: StreamingAlgo, sample, change_points):
-    detected = []
-    for i, (point, meta) in tqdm(enumerate(sample)):
-        algo.process_element(point, meta)
-        if algo.test():
-            detected.append(i)
-            algo.restart()
+        for n_nodes in rng:
+            for node_distribution in self.node_distributions:
+                for algo, fuse in zip(self.algos, self.fuses):
+                    result = self.__run_test__(p, algo, fuse, node_distribution, n_nodes, sample, changepoints)
+                    print(f'{algo.__name__} {node_distribution.__name__}: {result}')
+                    tdrs[f'{algo.__name__} {node_distribution.__name__}'].append(result['TDR'])
+                    mdrs[f'{algo.__name__} {node_distribution.__name__}'].append(result['MDR'])
+                    fdrs[f'{algo.__name__} {node_distribution.__name__}'].append(result['FDR'])
 
-    return calc_error(change_points, detected)
+        fig = plt.figure(figsize=(15, 15))
+        ax = fig.subplots(nrows=3, ncols=1, sharex=True, sharey=True)
+        for lst in list(tdrs.values()):
+            ax[0].plot(rng, lst)
+        ax[0].legend(list(tdrs.keys()))
+        ax[0].set_title('TDR')
 
+        for lst in list(mdrs.values()):
+            ax[1].plot(rng, lst)
+        ax[1].legend(list(mdrs.keys()))
+        ax[1].set_title('MDR')
 
-def compare_distibuted_algorithms_plots(algos):
-    tdrs = dict([(algo.__name__, []) for algo in algos])
-    mdrs = dict([(algo.__name__, []) for algo in algos])
-    fdrs = dict([(algo.__name__, []) for algo in algos])
+        for lst in list(fdrs.values()):
+            ax[2].plot(rng, lst)
+        ax[2].legend(list(fdrs.keys()))
+        ax[2].set_title('FDR')
 
-    sample, changepoints = generate_multichange_sample(100000)
-    for n_nodes in range(1, 14):
-        for algo in algos:
-            result = run_test(algo(0.01, n_nodes), sample, changepoints)
-            print(result)
-            tdrs[algo.__name__].append(result['TDR'])
-            mdrs[algo.__name__].append(result['MDR'])
-            fdrs[algo.__name__].append(result['FDR'])
-
-    fig = plt.figure(figsize=(15, 15))
-    ax = fig.subplots(nrows=3, ncols=1, sharex=True, sharey=True)
-    for lst in list(tdrs.values()):
-        ax[0].plot(range(1, 14), lst)
-    ax[0].legend(list(tdrs.keys()))
-    ax[0].set_title('TDR')
-
-    for lst in list(mdrs.values()):
-        ax[1].plot(range(1, 14), lst)
-    ax[1].legend(list(mdrs.keys()))
-    ax[1].set_title('MDR')
-
-    for lst in list(fdrs.values()):
-        ax[2].plot(range(1, 14), lst)
-    ax[2].legend(list(fdrs.keys()))
-    ax[2].set_title('FDR')
-
-    plt.show()
+        plt.show()

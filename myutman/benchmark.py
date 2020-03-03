@@ -3,6 +3,7 @@ from myutman.node_distribution import RoundrobinNodeDistribution, DependentNodeD
     SecondMetaDependentNodeDistribution
 from myutman.stand import Stand
 from myutman.generation import ClientTerminalsReorderSampleGeneration
+from myutman.stand_utils import compare_results
 from myutman.window_algo import WindowStreamingAlgo
 
 if __name__ == '__main__':
@@ -38,33 +39,27 @@ if __name__ == '__main__':
         terminal_node_distribution=DependentNodeDistribution,
         fuse=FuseForWindowAlgo()
     )
-    sample, change_points = ClientTerminalsReorderSampleGeneration()()
-    print(stand.test(
-        p=0.05,
-        sample=sample,
-        change_points=change_points,
-        n_clients=20,
-        n_terminals=20
-    ))
-    print(stand1.test(
-        p=0.05,
-        sample=sample,
-        change_points=change_points,
-        n_clients=20,
-        n_terminals=20
-    ))
-    print(stand2.test(
-        p=0.05,
-        sample=sample,
-        change_points=change_points,
-        n_clients=20,
-        n_terminals=20
-    ))
-    print(stand3.test(
-        p=0.05,
-        sample=sample,
-        change_points=change_points,
-        n_clients=20,
-        n_terminals=20
-    ))
-    #generate_problem_sample()
+    results1 = []
+    results2 = []
+    for i in range(10):
+        sample, change_points = ClientTerminalsReorderSampleGeneration(state=i)(size=10000, change_period=100, change_interval=20)
+        result1 = stand.test(
+            p=0.05,
+            sample=sample,
+            change_points=change_points,
+            n_clients=20,
+            n_terminals=20
+        )
+        print(result1)
+        results1.append(result1)
+        result2 = stand1.test(
+            p=0.05,
+            sample=sample,
+            change_points=change_points,
+            n_clients=20,
+            n_terminals=20
+        )
+        print(result2)
+        results2.append(result2)
+    print(compare_results(results1, results2))
+

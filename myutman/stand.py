@@ -5,12 +5,14 @@ from myutman.generation import SampleGeneration
 from myutman.node_distribution import NodeDistribution
 from myutman.single_thread import StreamingAlgo
 
-from tqdm import tqdm
+from tqdm.notebook import tqdm
 import numpy as np
+import json
+from datetime import datetime
 import matplotlib.pyplot as plt
 
 from myutman.stand_utils import calc_error
-
+import os
 
 class Stand:
     def __init__(
@@ -25,13 +27,19 @@ class Stand:
         self.algo = algo
         self.client_node_distribution = client_node_distribution(n_nodes)
         self.terminal_node_distribution = terminal_node_distribution(n_nodes)
+        self.result_filename = f"outputs/algo={algo.__name__}_" \
+                               f"client_dist={client_node_distribution.__name__}_" \
+                               f"terminal_dist={terminal_node_distribution.__name__}_" \
+                               f"nnodes={n_nodes}"
         self.fuse = fuse
+        os.system('mkdir -p outputs')
 
     def test(
         self,
         p: float,
         sample: List[Tuple[Any, float]],
         change_points: List[int],
+        change_ids: List[Tuple[int, int]],
         n_clients,
         n_terminals
     ) -> Dict[str, float]:
@@ -40,25 +48,46 @@ class Stand:
              [self.algo(p) for  _ in range(n_terminals)
               ]) for _ in range(self.n_nodes)
         ])
-        detected = []
+        detected: List[int] = []
+        detected_ids: List[Tuple[int, int]] = []
         for i, ((client_id, terminal_id), point) in tqdm(enumerate(sample)):
             client_node_id = self.client_node_distribution.get_node_index(client_id, terminal_id)
             terminal_node_id = self.terminal_node_distribution.get_node_index(terminal_id, client_id)
             nodes[client_node_id][0][client_id].process_element(point)
             nodes[terminal_node_id][1][terminal_id].process_element(point)
             detection = False
+            detection_ids = [-1, -1]
             if self.fuse(p, nodes[:, 1, terminal_id]):
                 detection = True
-                for node in nodes[:, 1, terminal_id]:
-                    node.restart()
+                detection_ids[1] = terminal_id
+                for algo in nodes[:, 1, terminal_id]:
+                    algo.restart()
             if self.fuse(p, nodes[:, 0, client_id]):
                 detection = True
-                for node in nodes[:, 0, client_id]:
-                    node.restart()
+                detection_ids[0] = client_id
+                for algo in nodes[:, 0, client_id]:
+                    algo.restart()
             if detection:
                 detected.append(i)
+                detected_ids.append(tuple(detection_ids))
 
-        return calc_error(change_points, detected)
+        error = calc_error(change_points, change_ids, detected, detected_ids)
+        output_json = {
+            "name": self.result_filename,
+            "n_clients": n_clients,
+            "n_terminals": n_terminals,
+            "error": error,
+            "sample": sample,
+            "change_points": change_points,
+            "change_ids": change_ids,
+            "detected_change_points": detected,
+            "detected_change_points_ids": detected_ids,
+        }
+
+        with open(f"{self.result_filename}_{datetime.now().timestamp()}.json", 'w') as output_file:
+            json.dump(output_json, output_file, ensure_ascii=False, indent=4)
+
+        return error
 
 
 """

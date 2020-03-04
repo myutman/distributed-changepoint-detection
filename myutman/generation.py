@@ -23,11 +23,12 @@ class SimpleMultichangeSampleGeneration(SampleGeneration):
             probs: List[float] = None,
             tau: float = 1000,
             tau_noise: float = 1,
-            delta: float = 10,
+            delta: float = 100,
             delta_noise: float = 0.1
-    ) -> Tuple[List[Tuple[int, float]], List[int]]:
+    ) -> Tuple[List[Tuple[Tuple[int, int], float]], List[int], List[Tuple[int, int]]]:
         sample = []
         change_points = []
+        change_ids = []
         mu = np.arange(n_modes, dtype=np.float64)
         limit = int(self.rnd.normal(tau, tau_noise))
         if probs is None:
@@ -38,9 +39,10 @@ class SimpleMultichangeSampleGeneration(SampleGeneration):
                 limit += int(self.rnd.normal(tau, tau_noise))
                 mu += self.rnd.normal(delta, delta_noise, size=n_modes)
                 change_points.append(i)
+                change_ids.append((0, 0))
             mode = self.rnd.choice(n_modes, p=probs)
-            sample.append((mode, self.rnd.normal(mu[mode], 1)))
-        return sample, change_points
+            sample.append(((0, 0), self.rnd.normal(mu[mode], 1)))
+        return sample, change_points, change_ids
 
 
 class TerminalOrderChangeSampleGenerarion(SampleGeneration):
@@ -91,6 +93,7 @@ class TerminalOrderChangeSampleGenerarion(SampleGeneration):
             terminal_id = self.rnd.choice(n_clients, p=terminal_probabilities[client_id])
             sample.append(((client_id, terminal_id), self.rnd.normal(mu[client_id][terminal_id], 1)))
         return sample, change_points
+
 
 class ClientOrderChangeSampleGeneration(SampleGeneration):
     def generate(
@@ -185,6 +188,7 @@ class ClientTerminalsReorderSampleGeneration(SampleGeneration):
             terminal_id = self.rnd.choice(n_clients, p=terminal_probabilities[client_id])
             sample.append(((client_id, terminal_id), self.rnd.normal(mu[client_id][terminal_id], 1)))
         return sample, change_points
+
 
 class ClientAverageAmountSampleGeneration(SampleGeneration):
     def generate(
@@ -362,7 +366,7 @@ class ChangeSampleGeneration(SampleGeneration):
         change_interval: int = 100,
         delta: float = 10,
         delta_noise: float = 1
-    ) -> Tuple[List[Tuple[Tuple[int, int], float]], List[int]]:
+    ) -> Tuple[List[Tuple[Tuple[int, int], float]], List[int], List[Tuple[int, int]]]:
         client_order = self.rnd.choice(n_clients, size=n_clients, replace=False)
         client_probabilities = 1 / (1 + client_order)
         client_probabilities /= client_probabilities.sum()
@@ -373,16 +377,18 @@ class ChangeSampleGeneration(SampleGeneration):
 
         sample = []
         change_points = []
+        change_ids = []
         a = self.rnd.lognormal(mean=np.log(10), size=n_clients)
         b = self.rnd.lognormal(mean=np.log(10), size=n_terminals)
         mu = a.reshape(-1, 1) @ b.reshape(1, -1)
         limit = int(self.rnd.normal(change_period, change_period_noise))
 
         change = None
+        is_client_change = False
         for i in range(size):
             if i == limit:
                 if change is None:
-                    is_client_change = (np.random.choice(2) == 1)
+                    is_client_change = not is_client_change
                     if is_client_change:
                         change_points.append(i)
                         limit += change_interval
@@ -399,6 +405,7 @@ class ChangeSampleGeneration(SampleGeneration):
                         new_terminal_probabilities /= new_terminal_probabilities.sum()
 
                         change = (hacked_client_id, d, True)
+                        change_ids.append((hacked_client_id, -1))
 
                         client_probabilities = new_client_probabilities
                         terminal_probabilities[hacked_client_id] = new_terminal_probabilities
@@ -410,6 +417,7 @@ class ChangeSampleGeneration(SampleGeneration):
                         mu[:, hacked_terminal_id] = mu[:, hacked_terminal_id] + d
 
                         change = (hacked_terminal_id, d, False)
+                        change_ids.append((-1, hacked_terminal_id))
                 else:
                     hacked_id, d, is_client_change = change
                     if is_client_change:
@@ -425,6 +433,38 @@ class ChangeSampleGeneration(SampleGeneration):
                         limit += int(self.rnd.normal(change_period, change_period_noise))
                         mu[:, hacked_id] -= d
                     change = None
+            client_id = self.rnd.choice(n_clients, p=client_probabilities)
+            terminal_id = self.rnd.choice(n_clients, p=terminal_probabilities[client_id])
+            sample.append(((client_id, terminal_id), self.rnd.normal(mu[client_id][terminal_id], 1)))
+        return sample, change_points, change_ids
+
+
+class StillSampleGeneration(SampleGeneration):
+    def generate(
+        self,
+        size: int = 100000,
+        n_clients: int = 20,
+        n_terminals: int = 20,
+        change_period: int = 1000,
+        change_period_noise: float = 1,
+        change_interval: int = 100,
+        delta: float = 10,
+        delta_noise: float = 1
+    ) -> Tuple[List[Tuple[Tuple[int, int], float]], List[int]]:
+        client_order = self.rnd.choice(n_clients, size=n_clients, replace=False)
+        client_probabilities = 1 / (1 + client_order)
+        client_probabilities /= client_probabilities.sum()
+        terminal_order = np.array(
+            [self.rnd.choice(n_terminals, size=n_terminals, replace=False) for _ in range(n_clients)])
+        terminal_probabilities = 1 / (1 + terminal_order)
+        terminal_probabilities /= terminal_probabilities.sum(axis=-1)
+
+        sample = []
+        change_points = []
+        a = self.rnd.lognormal(mean=np.log(10), size=n_clients)
+        b = self.rnd.lognormal(mean=np.log(10), size=n_terminals)
+        mu = a.reshape(-1, 1) @ b.reshape(1, -1)
+        for i in range(size):
             client_id = self.rnd.choice(n_clients, p=client_probabilities)
             terminal_id = self.rnd.choice(n_clients, p=terminal_probabilities[client_id])
             sample.append(((client_id, terminal_id), self.rnd.normal(mu[client_id][terminal_id], 1)))

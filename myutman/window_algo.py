@@ -45,7 +45,7 @@ class WindowStreamingAlgo(StreamingAlgo):
         self.rnd = np.random.RandomState(0)
         if window_sizes is None:
             #window_sizes = [(50 + self.rnd.choice(30), 50 + self.rnd.choice(30)) for _ in range(3)]
-            window_sizes = [(5, 5), (10, 10), (15, 15), (20, 20)]
+            window_sizes = [(20, 20), (30, 30), (40, 40)]
         self.window_count = len(window_sizes)
         self.window_pairs = [[WindowPair(sizes, dist) for _ in range(l + 1)] for sizes in window_sizes]
 

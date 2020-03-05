@@ -1,4 +1,4 @@
-from typing import Tuple, List, Dict, Type, Any
+from typing import Tuple, List, Dict, Type, Any, Optional
 
 from myutman.fuse import Fuse
 from myutman.generation import SampleGeneration
@@ -21,7 +21,9 @@ class Stand:
         algo: Type[StreamingAlgo],
         client_node_distribution: Type[NodeDistribution],
         terminal_node_distribution: Type[NodeDistribution],
-        fuse: Fuse
+        fuse: Fuse,
+        client_algo_kwargs: Optional[Dict[str, Any]] = None,
+        terminal_algo_kwargs: Optional[Dict[str, Any]] = None
     ) -> None:
         self.n_nodes = n_nodes
         self.algo = algo
@@ -32,6 +34,14 @@ class Stand:
                                f"terminal_dist={terminal_node_distribution.__name__}_" \
                                f"nnodes={n_nodes}"
         self.fuse = fuse
+        if client_algo_kwargs is None:
+            self.client_algo_kwargs: Dict[str, Any] = {}
+        else:
+            self.client_algo_kwargs: Dict[str, Any] = client_algo_kwargs
+        if terminal_algo_kwargs is None:
+            self.terminal_algo_kwargs: Dict[str, Any] = {}
+        else:
+            self.terminal_algo_kwargs: Dict[str, Any] = terminal_algo_kwargs
         os.system('mkdir -p outputs')
 
     def test(
@@ -43,9 +53,9 @@ class Stand:
         n_clients,
         n_terminals
     ) -> Dict[str, float]:
-        nodes: np.ndarray = np.array([#List[Tuple[List[StreamingAlgo], List[StreamingAlgo]]] = np.array([
-            ([self.algo(p) for  _ in range(n_clients)],
-             [self.algo(p) for  _ in range(n_terminals)
+        nodes: np.ndarray = np.array([  # List[Tuple[List[StreamingAlgo], List[StreamingAlgo]]] = np.array([
+            ([self.algo(p, **self.client_algo_kwargs) for _ in range(n_clients)],
+             [self.algo(p, **self.terminal_algo_kwargs) for _ in range(n_terminals)
               ]) for _ in range(self.n_nodes)
         ])
         detected: List[int] = []
@@ -84,7 +94,9 @@ class Stand:
             "detected_change_points_ids": detected_ids,
         }
 
-        with open(f"{self.result_filename}_{datetime.now().timestamp()}.json", 'w') as output_file:
+        output_filename = f"{self.result_filename}_{datetime.now().timestamp()}.json"
+        print(f"Result written to {output_filename}")
+        with open(output_filename, 'w') as output_file:
             json.dump(output_json, output_file, ensure_ascii=False, indent=4)
 
         return error

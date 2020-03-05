@@ -367,9 +367,9 @@ class ChangeSampleGeneration(SampleGeneration):
         delta: float = 10,
         delta_noise: float = 1
     ) -> Tuple[List[Tuple[Tuple[int, int], float]], List[int], List[Tuple[int, int]]]:
-        client_order = self.rnd.choice(n_clients, size=n_clients, replace=False)
-        client_probabilities = 1 / (1 + client_order)
-        client_probabilities /= client_probabilities.sum()
+        #client_order = self.rnd.choice(n_clients, size=n_clients, replace=False)
+        client_probabilities = np.ones(n_clients) / n_clients #1 / (1 + client_order)
+        #client_probabilities /= client_probabilities.sum()
         terminal_order = np.array(
             [self.rnd.choice(n_terminals, size=n_terminals, replace=False) for _ in range(n_clients)])
         terminal_probabilities = 1 / (1 + terminal_order)
@@ -378,8 +378,8 @@ class ChangeSampleGeneration(SampleGeneration):
         sample = []
         change_points = []
         change_ids = []
-        a = self.rnd.lognormal(mean=np.log(10), size=n_clients)
-        b = self.rnd.lognormal(mean=np.log(10), size=n_terminals)
+        a = np.ones(n_clients, dtype=float) * 10 #self.rnd.lognormal(mean=np.log(10), size=n_clients)
+        b = np.ones(n_terminals, dtype=float) * 10 #self.rnd.lognormal(mean=np.log(10), size=n_terminals)
         mu = a.reshape(-1, 1) @ b.reshape(1, -1)
         limit = int(self.rnd.normal(change_period, change_period_noise))
 
@@ -393,43 +393,46 @@ class ChangeSampleGeneration(SampleGeneration):
                         change_points.append(i)
                         limit += change_interval
                         hacked_client_id = self.rnd.choice(n_clients)
-                        d = b * self.rnd.lognormal(mean=np.log(10))
+                        d = b * 10 # self.rnd.lognormal(mean=np.log(10))
                         mu[hacked_client_id] = mu[hacked_client_id] + d
-                        client_anomaly = client_order.copy() + 1
-                        new_client_probabilities = 1 / (1 + client_anomaly)
+                        #client_anomaly = client_order.copy() + 1
+                        new_client_probabilities = np.ones(n_clients) #1 / (1 + client_anomaly)
                         new_client_probabilities[hacked_client_id] += 1.
                         new_client_probabilities /= new_client_probabilities.sum()
 
-                        terminal_anomaly = self.rnd.choice(n_terminals, size=n_terminals, replace=False)
-                        new_terminal_probabilities = 1 / (1 + terminal_order[hacked_client_id]) + 1 / (1 + terminal_anomaly)
-                        new_terminal_probabilities /= new_terminal_probabilities.sum()
+                        #terminal_anomaly = self.rnd.choice(n_terminals, size=n_terminals, replace=False)
+                        #new_terminal_probabilities = 1 / (1 + terminal_order[hacked_client_id]) + 1 / (1 + terminal_anomaly)
+                        #new_terminal_probabilities /= new_terminal_probabilities.sum()
 
                         change = (hacked_client_id, d, True)
                         change_ids.append((hacked_client_id, -1))
 
                         client_probabilities = new_client_probabilities
-                        terminal_probabilities[hacked_client_id] = new_terminal_probabilities
+                        #terminal_probabilities[hacked_client_id] = new_terminal_probabilities
                     else:
                         change_points.append(i)
                         limit += change_interval
                         hacked_terminal_id = self.rnd.choice(n_terminals)
-                        d = a * self.rnd.lognormal(mean=np.log(10))
+                        d = a * 10 #self.rnd.lognormal(mean=np.log(10))
                         mu[:, hacked_terminal_id] = mu[:, hacked_terminal_id] + d
 
                         change = (hacked_terminal_id, d, False)
                         change_ids.append((-1, hacked_terminal_id))
                 else:
+                    change_points.append(i)
                     hacked_id, d, is_client_change = change
                     if is_client_change:
+                        change_ids.append((hacked_id, -1))
                         limit += int(self.rnd.normal(change_period, change_period_noise))
                         mu[hacked_id] -= d
 
-                        client_probabilities = 1 / (1 + client_order)
-                        client_probabilities /= client_probabilities.sum()
+                        client_probabilities = np.ones(n_clients) / n_clients #1 / (1 + client_order)
+                        #client_probabilities /= client_probabilities.sum()
 
-                        terminal_probabilities[hacked_id] = 1 / (1 + terminal_probabilities[hacked_id])
-                        terminal_probabilities[hacked_id] /= terminal_probabilities[hacked_id].sum()
+                        #terminal_probabilities[hacked_id] = 1 / (1 + terminal_probabilities[hacked_id])
+                        #terminal_probabilities[hacked_id] /= terminal_probabilities[hacked_id].sum()
                     else:
+                        change_ids.append((-1, hacked_id))
                         limit += int(self.rnd.normal(change_period, change_period_noise))
                         mu[:, hacked_id] -= d
                     change = None

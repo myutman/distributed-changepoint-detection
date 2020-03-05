@@ -16,6 +16,8 @@ class Fuse:
 
 
 class FuseForWindowAlgo(Fuse):
+    EPS = 1e-9
+
     def __init__(self):
         super(FuseForWindowAlgo, self).__init__()
 
@@ -23,4 +25,4 @@ class FuseForWindowAlgo(Fuse):
         stats = [node.get_stat() for node in nodes]
         stat = np.max(stats, axis=0)
         thresholds = np.quantile(stat[:, 1:], 1 - p, axis=-1)
-        return np.any(thresholds < stat[:, 0])
+        return np.any(thresholds < stat[:, 0] - FuseForWindowAlgo.EPS)

@@ -17,29 +17,29 @@ class SampleGeneration():
 
 class SimpleMultichangeSampleGeneration(SampleGeneration):
     def generate(
-            self,
-            size: int,
-            n_modes: int = 13,
-            probs: List[float] = None,
-            tau: float = 1000,
-            tau_noise: float = 1,
-            delta: float = 100,
-            delta_noise: float = 0.1
+        self,
+        size: int,
+        n_modes: int = 13,
+        probs: List[float] = None,
+        change_period: float = 1000,
+        change_period_noise: float = 1,
+        change_amount: float = 100,
+        change_amount_noise: float = 0.1
     ) -> Tuple[List[Tuple[Tuple[int, int], float]], List[int], List[Tuple[int, int]]]:
         sample = []
         change_points = []
         change_ids = []
         mu = np.arange(n_modes, dtype=np.float64)
-        limit = int(self.rnd.normal(tau, tau_noise))
+        limit = int(self.rnd.normal(change_period, change_period_noise))
         if probs is None:
             probs = 1 / np.arange(1, n_modes + 1)
             probs /= probs.sum()
         for i in range(size):
             if i == limit:
-                limit += int(self.rnd.normal(tau, tau_noise))
-                mu += self.rnd.normal(delta, delta_noise, size=n_modes)
+                limit += int(self.rnd.normal(change_period, change_period_noise))
+                mu += self.rnd.normal(change_amount, change_amount_noise, size=n_modes)
                 change_points.append(i)
-                change_ids.append((0, 0))
+                change_ids.append((0, -1))
             mode = self.rnd.choice(n_modes, p=probs)
             sample.append(((0, 0), self.rnd.normal(mu[mode], 1)))
         return sample, change_points, change_ids
@@ -359,8 +359,8 @@ class ChangeSampleGeneration(SampleGeneration):
     def generate(
         self,
         size: int = 100000,
-        n_clients: int = 20,
-        n_terminals: int = 20,
+        n_account1s: int = 20,
+        n_account2s: int = 20,
         change_period: int = 1000,
         change_period_noise: float = 1,
         change_interval: int = 100,
@@ -368,18 +368,18 @@ class ChangeSampleGeneration(SampleGeneration):
         delta_noise: float = 1
     ) -> Tuple[List[Tuple[Tuple[int, int], float]], List[int], List[Tuple[int, int]]]:
         #client_order = self.rnd.choice(n_clients, size=n_clients, replace=False)
-        client_probabilities = np.ones(n_clients) / n_clients #1 / (1 + client_order)
+        client_probabilities = np.ones(n_account1s) / n_account1s #1 / (1 + client_order)
         #client_probabilities /= client_probabilities.sum()
         terminal_order = np.array(
-            [self.rnd.choice(n_terminals, size=n_terminals, replace=False) for _ in range(n_clients)])
+            [self.rnd.choice(n_account2s, size=n_account2s, replace=False) for _ in range(n_account1s)])
         terminal_probabilities = 1 / (1 + terminal_order)
         terminal_probabilities /= terminal_probabilities.sum(axis=-1)
 
         sample = []
         change_points = []
         change_ids = []
-        a = np.ones(n_clients, dtype=float) * 10 #self.rnd.lognormal(mean=np.log(10), size=n_clients)
-        b = np.ones(n_terminals, dtype=float) * 10 #self.rnd.lognormal(mean=np.log(10), size=n_terminals)
+        a = np.ones(n_account1s, dtype=float) * 10 #self.rnd.lognormal(mean=np.log(10), size=n_clients)
+        b = np.ones(n_account2s, dtype=float) * 10 #self.rnd.lognormal(mean=np.log(10), size=n_terminals)
         mu = a.reshape(-1, 1) @ b.reshape(1, -1)
         limit = int(self.rnd.normal(change_period, change_period_noise))
 
@@ -392,11 +392,11 @@ class ChangeSampleGeneration(SampleGeneration):
                     if is_client_change:
                         change_points.append(i)
                         limit += change_interval
-                        hacked_client_id = self.rnd.choice(n_clients)
+                        hacked_client_id = self.rnd.choice(n_account1s)
                         d = b * 10 # self.rnd.lognormal(mean=np.log(10))
                         mu[hacked_client_id] = mu[hacked_client_id] + d
                         #client_anomaly = client_order.copy() + 1
-                        new_client_probabilities = np.ones(n_clients) #1 / (1 + client_anomaly)
+                        new_client_probabilities = np.ones(n_account1s) #1 / (1 + client_anomaly)
                         new_client_probabilities[hacked_client_id] += 1.
                         new_client_probabilities /= new_client_probabilities.sum()
 
@@ -412,7 +412,7 @@ class ChangeSampleGeneration(SampleGeneration):
                     else:
                         change_points.append(i)
                         limit += change_interval
-                        hacked_terminal_id = self.rnd.choice(n_terminals)
+                        hacked_terminal_id = self.rnd.choice(n_account2s)
                         d = a * 10 #self.rnd.lognormal(mean=np.log(10))
                         mu[:, hacked_terminal_id] = mu[:, hacked_terminal_id] + d
 
@@ -426,7 +426,7 @@ class ChangeSampleGeneration(SampleGeneration):
                         limit += int(self.rnd.normal(change_period, change_period_noise))
                         mu[hacked_id] -= d
 
-                        client_probabilities = np.ones(n_clients) / n_clients #1 / (1 + client_order)
+                        client_probabilities = np.ones(n_account1s) / n_account1s #1 / (1 + client_order)
                         #client_probabilities /= client_probabilities.sum()
 
                         #terminal_probabilities[hacked_id] = 1 / (1 + terminal_probabilities[hacked_id])
@@ -436,8 +436,8 @@ class ChangeSampleGeneration(SampleGeneration):
                         limit += int(self.rnd.normal(change_period, change_period_noise))
                         mu[:, hacked_id] -= d
                     change = None
-            client_id = self.rnd.choice(n_clients, p=client_probabilities)
-            terminal_id = self.rnd.choice(n_clients, p=terminal_probabilities[client_id])
+            client_id = self.rnd.choice(n_account1s, p=client_probabilities)
+            terminal_id = self.rnd.choice(n_account1s, p=terminal_probabilities[client_id])
             sample.append(((client_id, terminal_id), self.rnd.normal(mu[client_id][terminal_id], 1)))
         return sample, change_points, change_ids
 
@@ -472,3 +472,55 @@ class StillSampleGeneration(SampleGeneration):
             terminal_id = self.rnd.choice(n_clients, p=terminal_probabilities[client_id])
             sample.append(((client_id, terminal_id), self.rnd.normal(mu[client_id][terminal_id], 1)))
         return sample, change_points
+
+
+class LogExpChangeSampleGeneration(SampleGeneration):
+    def generate(
+        self,
+        size: int,
+        probs: List[float] = None,
+        change_period: float = 200,
+        change_period_noise: float = 1
+    ) -> Tuple[List[Tuple[Tuple[int, int], float]], List[int], List[Tuple[int, int]]]:
+        sample = []
+        change_points = []
+        change_ids = []
+        mu = 0
+        limit = int(self.rnd.normal(change_period, change_period_noise))
+        is_normal = True
+        for i in range(size):
+            if i == limit:
+                limit += int(self.rnd.normal(change_period, change_period_noise))
+                change_points.append(i)
+                change_ids.append((0, -1))
+                is_normal = not is_normal
+            if is_normal:
+                sample.append(((0, 0), self.rnd.normal(loc=mu, scale=1)))
+            else:
+                sample.append(((0, 0), self.rnd.exponential(scale=1)))
+        return sample, change_points, change_ids
+
+
+class OriginalExperiment1UniformSampleGeneration(SampleGeneration):
+    def generate(
+        self,
+        size: int,
+        probs: List[float] = None,
+        change_period: float = 200,
+        change_period_noise: float = 1
+    ) -> Tuple[List[Tuple[Tuple[int, int], float]], List[int], List[Tuple[int, int]]]:
+        sample = []
+        change_points = []
+        change_ids = []
+        param = 5
+        param_noise = 1
+        limit = int(self.rnd.normal(change_period, change_period_noise))
+        for i in range(size):
+            if i == limit:
+                limit += int(self.rnd.normal(change_period, change_period_noise))
+                param = abs(param + self.rnd.uniform(-param_noise, param_noise))
+                change_points.append(i)
+                change_ids.append((0, -1))
+            sample.append(((0, 0), self.rnd.uniform(-param, param)))
+
+        return sample, change_points, change_ids

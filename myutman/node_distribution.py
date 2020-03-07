@@ -67,3 +67,15 @@ class SecondMetaDependentNodeDistribution(NodeDistribution):
 
     def get_involved_node_indices(self, *args) -> np.ndarray:
         return np.arange(self.n_nodes)
+
+"""   
+class ValueDependentNodeDistribution(NodeDistribution):
+    def __init__(self, n_nodes: int):
+        super(ValueDependentNodeDistribution, self).__init__(n_nodes)
+
+    def get_node_index(self, value, *args) -> int:
+        return hash(meta) % self.n_nodes
+
+    def get_involved_node_indices(self, meta: Hashable, *args) -> np.ndarray:
+        return np.array([hash(meta) % self.n_nodes])
+"""

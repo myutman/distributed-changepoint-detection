@@ -1,0 +1,540 @@
+[
+    [
+        [
+            [
+                {
+                    "account1_TDR": 0.9523809523809523,
+                    "account1_MDR": 0.04761904761904767,
+                    "account1_FDR": 0.3548387096774194,
+                    "account1_CDR": null,
+                    "account2_TDR": null,
+                    "account2_MDR": null,
+                    "account2_FDR": null,
+                    "account2_CDR": 0.0,
+                    "account1_False": 11,
+                    "account2_False": 0,
+                    "account1_latency": 32.6,
+                    "account2_latency": null
+                },
+                {
+                    "account1_TDR": 0.9523809523809523,
+                    "account1_MDR": 0.04761904761904767,
+                    "account1_FDR": 0.31034482758620685,
+                    "account1_CDR": null,
+                    "account2_TDR": null,
+                    "account2_MDR": null,
+                    "account2_FDR": null,
+                    "account2_CDR": 0.0,
+                    "account1_False": 9,
+                    "account2_False": 0,
+                    "account1_latency": 34.85,
+                    "account2_latency": null
+                },
+                {
+                    "account1_TDR": 0.9523809523809523,
+                    "account1_MDR": 0.04761904761904767,
+                    "account1_FDR": 0.3939393939393939,
+                    "account1_CDR": null,
+                    "account2_TDR": null,
+                    "account2_MDR": null,
+                    "account2_FDR": null,
+                    "account2_CDR": 0.0,
+                    "account1_False": 13,
+                    "account2_False": 0,
+                    "account1_latency": 33.45,
+                    "account2_latency": null
+                }
+            ],
+            [
+                {
+                    "account1_TDR": 0.9523809523809523,
+                    "account1_MDR": 0.04761904761904767,
+                    "account1_FDR": 0.4736842105263158,
+                    "account1_CDR": null,
+                    "account2_TDR": null,
+                    "account2_MDR": null,
+                    "account2_FDR": null,
+                    "account2_CDR": 0.0,
+                    "account1_False": 18,
+                    "account2_False": 0,
+                    "account1_latency": 29.85,
+                    "account2_latency": null
+                },
+                {
+                    "account1_TDR": 0.9523809523809523,
+                    "account1_MDR": 0.04761904761904767,
+                    "account1_FDR": 0.3939393939393939,
+                    "account1_CDR": null,
+                    "account2_TDR": null,
+                    "account2_MDR": null,
+                    "account2_FDR": null,
+                    "account2_CDR": 0.0,
+                    "account1_False": 13,
+                    "account2_False": 0,
+                    "account1_latency": 32.3,
+                    "account2_latency": null
+                },
+                {
+                    "account1_TDR": 0.9523809523809523,
+                    "account1_MDR": 0.04761904761904767,
+                    "account1_FDR": 0.6,
+                    "account1_CDR": null,
+                    "account2_TDR": null,
+                    "account2_MDR": null,
+                    "account2_FDR": null,
+                    "account2_CDR": 0.0,
+                    "account1_False": 30,
+                    "account2_False": 0,
+                    "account1_latency": 30.2,
+                    "account2_latency": null
+                }
+            ],
+            [
+                {
+                    "account1_TDR": 0.9523809523809523,
+                    "account1_MDR": 0.04761904761904767,
+                    "account1_FDR": 0.6363636363636364,
+                    "account1_CDR": null,
+                    "account2_TDR": null,
+                    "account2_MDR": null,
+                    "account2_FDR": null,
+                    "account2_CDR": 0.0,
+                    "account1_False": 35,
+                    "account2_False": 0,
+                    "account1_latency": 28.75,
+                    "account2_latency": null
+                },
+                {
+                    "account1_TDR": 0.9523809523809523,
+                    "account1_MDR": 0.04761904761904767,
+                    "account1_FDR": 0.5121951219512195,
+                    "account1_CDR": null,
+                    "account2_TDR": null,
+                    "account2_MDR": null,
+                    "account2_FDR": null,
+                    "account2_CDR": 0.0,
+                    "account1_False": 21,
+                    "account2_False": 0,
+                    "account1_latency": 30.45,
+                    "account2_latency": null
+                },
+                {
+                    "account1_TDR": 0.9523809523809523,
+                    "account1_MDR": 0.04761904761904767,
+                    "account1_FDR": 0.6610169491525424,
+                    "account1_CDR": null,
+                    "account2_TDR": null,
+                    "account2_MDR": null,
+                    "account2_FDR": null,
+                    "account2_CDR": 0.0,
+                    "account1_False": 39,
+                    "account2_False": 0,
+                    "account1_latency": 46.5,
+                    "account2_latency": null
+                }
+            ]
+        ],
+        [
+            [
+                {
+                    "account1_TDR": 0.9523809523809523,
+                    "account1_MDR": 0.04761904761904767,
+                    "account1_FDR": 0.4285714285714286,
+                    "account1_CDR": null,
+                    "account2_TDR": null,
+                    "account2_MDR": null,
+                    "account2_FDR": null,
+                    "account2_CDR": 0.0,
+                    "account1_False": 15,
+                    "account2_False": 0,
+                    "account1_latency": 224.95,
+                    "account2_latency": null
+                },
+                {
+                    "account1_TDR": 0.9523809523809523,
+                    "account1_MDR": 0.04761904761904767,
+                    "account1_FDR": 0.5121951219512195,
+                    "account1_CDR": null,
+                    "account2_TDR": null,
+                    "account2_MDR": null,
+                    "account2_FDR": null,
+                    "account2_CDR": 0.0,
+                    "account1_False": 21,
+                    "account2_False": 0,
+                    "account1_latency": 208.6,
+                    "account2_latency": null
+                },
+                {
+                    "account1_TDR": 0.9523809523809523,
+                    "account1_MDR": 0.04761904761904767,
+                    "account1_FDR": 0.5348837209302326,
+                    "account1_CDR": null,
+                    "account2_TDR": null,
+                    "account2_MDR": null,
+                    "account2_FDR": null,
+                    "account2_CDR": 0.0,
+                    "account1_False": 23,
+                    "account2_False": 0,
+                    "account1_latency": 229.8,
+                    "account2_latency": null
+                }
+            ],
+            [
+                {
+                    "account1_TDR": 0.9523809523809523,
+                    "account1_MDR": 0.04761904761904767,
+                    "account1_FDR": 0.5454545454545454,
+                    "account1_CDR": null,
+                    "account2_TDR": null,
+                    "account2_MDR": null,
+                    "account2_FDR": null,
+                    "account2_CDR": 0.0,
+                    "account1_False": 24,
+                    "account2_False": 0,
+                    "account1_latency": 215.65,
+                    "account2_latency": null
+                },
+                {
+                    "account1_TDR": 0.9523809523809523,
+                    "account1_MDR": 0.04761904761904767,
+                    "account1_FDR": 0.574468085106383,
+                    "account1_CDR": null,
+                    "account2_TDR": null,
+                    "account2_MDR": null,
+                    "account2_FDR": null,
+                    "account2_CDR": 0.0,
+                    "account1_False": 27,
+                    "account2_False": 0,
+                    "account1_latency": 334.3,
+                    "account2_latency": null
+                },
+                {
+                    "account1_TDR": 0.9523809523809523,
+                    "account1_MDR": 0.04761904761904767,
+                    "account1_FDR": 0.6226415094339622,
+                    "account1_CDR": null,
+                    "account2_TDR": null,
+                    "account2_MDR": null,
+                    "account2_FDR": null,
+                    "account2_CDR": 0.0,
+                    "account1_False": 33,
+                    "account2_False": 0,
+                    "account1_latency": 482.15,
+                    "account2_latency": null
+                }
+            ],
+            [
+                {
+                    "account1_TDR": 0.9523809523809523,
+                    "account1_MDR": 0.04761904761904767,
+                    "account1_FDR": 0.6551724137931034,
+                    "account1_CDR": null,
+                    "account2_TDR": null,
+                    "account2_MDR": null,
+                    "account2_FDR": null,
+                    "account2_CDR": 0.0,
+                    "account1_False": 38,
+                    "account2_False": 0,
+                    "account1_latency": 360.85,
+                    "account2_latency": null
+                },
+                {
+                    "account1_TDR": 0.9523809523809523,
+                    "account1_MDR": 0.04761904761904767,
+                    "account1_FDR": 0.6363636363636364,
+                    "account1_CDR": null,
+                    "account2_TDR": null,
+                    "account2_MDR": null,
+                    "account2_FDR": null,
+                    "account2_CDR": 0.0,
+                    "account1_False": 35,
+                    "account2_False": 0,
+                    "account1_latency": 286.6,
+                    "account2_latency": null
+                },
+                {
+                    "account1_TDR": 0.9523809523809523,
+                    "account1_MDR": 0.04761904761904767,
+                    "account1_FDR": 0.6610169491525424,
+                    "account1_CDR": null,
+                    "account2_TDR": null,
+                    "account2_MDR": null,
+                    "account2_FDR": null,
+                    "account2_CDR": 0.0,
+                    "account1_False": 39,
+                    "account2_False": 0,
+                    "account1_latency": 418.4,
+                    "account2_latency": null
+                }
+            ]
+        ],
+        [
+            [
+                {
+                    "account1_TDR": 0.9523809523809523,
+                    "account1_MDR": 0.04761904761904767,
+                    "account1_FDR": 0.3939393939393939,
+                    "account1_CDR": null,
+                    "account2_TDR": null,
+                    "account2_MDR": null,
+                    "account2_FDR": null,
+                    "account2_CDR": 0.0,
+                    "account1_False": 13,
+                    "account2_False": 0,
+                    "account1_latency": 610.85,
+                    "account2_latency": null
+                },
+                {
+                    "account1_TDR": 0.9047619047619048,
+                    "account1_MDR": 0.09523809523809523,
+                    "account1_FDR": 0.3448275862068966,
+                    "account1_CDR": null,
+                    "account2_TDR": null,
+                    "account2_MDR": null,
+                    "account2_FDR": null,
+                    "account2_CDR": 0.0,
+                    "account1_False": 10,
+                    "account2_False": 0,
+                    "account1_latency": 665.4736842105264,
+                    "account2_latency": null
+                },
+                {
+                    "account1_TDR": 0.9523809523809523,
+                    "account1_MDR": 0.04761904761904767,
+                    "account1_FDR": 0.375,
+                    "account1_CDR": null,
+                    "account2_TDR": null,
+                    "account2_MDR": null,
+                    "account2_FDR": null,
+                    "account2_CDR": 0.0,
+                    "account1_False": 12,
+                    "account2_False": 0,
+                    "account1_latency": 920.7,
+                    "account2_latency": null
+                }
+            ],
+            [
+                {
+                    "account1_TDR": 0.9523809523809523,
+                    "account1_MDR": 0.04761904761904767,
+                    "account1_FDR": 0.45945945945945943,
+                    "account1_CDR": null,
+                    "account2_TDR": null,
+                    "account2_MDR": null,
+                    "account2_FDR": null,
+                    "account2_CDR": 0.0,
+                    "account1_False": 17,
+                    "account2_False": 0,
+                    "account1_latency": 861.4,
+                    "account2_latency": null
+                },
+                {
+                    "account1_TDR": 0.9523809523809523,
+                    "account1_MDR": 0.04761904761904767,
+                    "account1_FDR": 0.4444444444444444,
+                    "account1_CDR": null,
+                    "account2_TDR": null,
+                    "account2_MDR": null,
+                    "account2_FDR": null,
+                    "account2_CDR": 0.0,
+                    "account1_False": 16,
+                    "account2_False": 0,
+                    "account1_latency": 961.45,
+                    "account2_latency": null
+                },
+                {
+                    "account1_TDR": 0.9523809523809523,
+                    "account1_MDR": 0.04761904761904767,
+                    "account1_FDR": 0.4444444444444444,
+                    "account1_CDR": null,
+                    "account2_TDR": null,
+                    "account2_MDR": null,
+                    "account2_FDR": null,
+                    "account2_CDR": 0.0,
+                    "account1_False": 16,
+                    "account2_False": 0,
+                    "account1_latency": 685.8,
+                    "account2_latency": null
+                }
+            ],
+            [
+                {
+                    "account1_TDR": 0.9523809523809523,
+                    "account1_MDR": 0.04761904761904767,
+                    "account1_FDR": 0.4736842105263158,
+                    "account1_CDR": null,
+                    "account2_TDR": null,
+                    "account2_MDR": null,
+                    "account2_FDR": null,
+                    "account2_CDR": 0.0,
+                    "account1_False": 18,
+                    "account2_False": 0,
+                    "account1_latency": 1359.85,
+                    "account2_latency": null
+                },
+                {
+                    "account1_TDR": 0.9523809523809523,
+                    "account1_MDR": 0.04761904761904767,
+                    "account1_FDR": 0.45945945945945943,
+                    "account1_CDR": null,
+                    "account2_TDR": null,
+                    "account2_MDR": null,
+                    "account2_FDR": null,
+                    "account2_CDR": 0.0,
+                    "account1_False": 17,
+                    "account2_False": 0,
+                    "account1_latency": 653.65,
+                    "account2_latency": null
+                },
+                {
+                    "account1_TDR": 0.9523809523809523,
+                    "account1_MDR": 0.04761904761904767,
+                    "account1_FDR": 0.4736842105263158,
+                    "account1_CDR": null,
+                    "account2_TDR": null,
+                    "account2_MDR": null,
+                    "account2_FDR": null,
+                    "account2_CDR": 0.0,
+                    "account1_False": 18,
+                    "account2_False": 0,
+                    "account1_latency": 914.55,
+                    "account2_latency": null
+                }
+            ]
+        ],
+        [
+            [
+                {
+                    "account1_TDR": 0.9523809523809523,
+                    "account1_MDR": 0.04761904761904767,
+                    "account1_FDR": 0.0,
+                    "account1_CDR": null,
+                    "account2_TDR": null,
+                    "account2_MDR": null,
+                    "account2_FDR": null,
+                    "account2_CDR": 0.0,
+                    "account1_False": 0,
+                    "account2_False": 0,
+                    "account1_latency": 1295.45,
+                    "account2_latency": null
+                },
+                {
+                    "account1_TDR": 0.9523809523809523,
+                    "account1_MDR": 0.04761904761904767,
+                    "account1_FDR": 0.0,
+                    "account1_CDR": null,
+                    "account2_TDR": null,
+                    "account2_MDR": null,
+                    "account2_FDR": null,
+                    "account2_CDR": 0.0,
+                    "account1_False": 0,
+                    "account2_False": 0,
+                    "account1_latency": 1412.8,
+                    "account2_latency": null
+                },
+                {
+                    "account1_TDR": 0.9523809523809523,
+                    "account1_MDR": 0.04761904761904767,
+                    "account1_FDR": 0.0,
+                    "account1_CDR": null,
+                    "account2_TDR": null,
+                    "account2_MDR": null,
+                    "account2_FDR": null,
+                    "account2_CDR": 0.0,
+                    "account1_False": 0,
+                    "account2_False": 0,
+                    "account1_latency": 1341.35,
+                    "account2_latency": null
+                }
+            ],
+            [
+                {
+                    "account1_TDR": 0.9523809523809523,
+                    "account1_MDR": 0.04761904761904767,
+                    "account1_FDR": 0.0,
+                    "account1_CDR": null,
+                    "account2_TDR": null,
+                    "account2_MDR": null,
+                    "account2_FDR": null,
+                    "account2_CDR": 0.0,
+                    "account1_False": 0,
+                    "account2_False": 0,
+                    "account1_latency": 1184.4,
+                    "account2_latency": null
+                },
+                {
+                    "account1_TDR": 0.9523809523809523,
+                    "account1_MDR": 0.04761904761904767,
+                    "account1_FDR": 0.0,
+                    "account1_CDR": null,
+                    "account2_TDR": null,
+                    "account2_MDR": null,
+                    "account2_FDR": null,
+                    "account2_CDR": 0.0,
+                    "account1_False": 0,
+                    "account2_False": 0,
+                    "account1_latency": 1304.8,
+                    "account2_latency": null
+                },
+                {
+                    "account1_TDR": 0.9523809523809523,
+                    "account1_MDR": 0.04761904761904767,
+                    "account1_FDR": 0.0,
+                    "account1_CDR": null,
+                    "account2_TDR": null,
+                    "account2_MDR": null,
+                    "account2_FDR": null,
+                    "account2_CDR": 0.0,
+                    "account1_False": 0,
+                    "account2_False": 0,
+                    "account1_latency": 1126.85,
+                    "account2_latency": null
+                }
+            ],
+            [
+                {
+                    "account1_TDR": 0.9523809523809523,
+                    "account1_MDR": 0.04761904761904767,
+                    "account1_FDR": 0.0,
+                    "account1_CDR": null,
+                    "account2_TDR": null,
+                    "account2_MDR": null,
+                    "account2_FDR": null,
+                    "account2_CDR": 0.0,
+                    "account1_False": 0,
+                    "account2_False": 0,
+                    "account1_latency": 1107.25,
+                    "account2_latency": null
+                },
+                {
+                    "account1_TDR": 0.9523809523809523,
+                    "account1_MDR": 0.04761904761904767,
+                    "account1_FDR": 0.0,
+                    "account1_CDR": null,
+                    "account2_TDR": null,
+                    "account2_MDR": null,
+                    "account2_FDR": null,
+                    "account2_CDR": 0.0,
+                    "account1_False": 0,
+                    "account2_False": 0,
+                    "account1_latency": 1117.65,
+                    "account2_latency": null
+                },
+                {
+                    "account1_TDR": 0.9523809523809523,
+                    "account1_MDR": 0.04761904761904767,
+                    "account1_FDR": 0.0,
+                    "account1_CDR": null,
+                    "account2_TDR": null,
+                    "account2_MDR": null,
+                    "account2_FDR": null,
+                    "account2_CDR": 0.0,
+                    "account1_False": 0,
+                    "account2_False": 0,
+                    "account1_latency": 1111.15,
+                    "account2_latency": null
+                }
+            ]
+        ]
+    ]
+]

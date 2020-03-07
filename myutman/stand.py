@@ -1,47 +1,45 @@
+import json
+import os
+from datetime import datetime
 from typing import Tuple, List, Dict, Type, Any, Optional
 
+import numpy as np
+from tqdm import tqdm
+
 from myutman.fuse import Fuse
-from myutman.generation import SampleGeneration
 from myutman.node_distribution import NodeDistribution
 from myutman.single_thread import StreamingAlgo
-
-from tqdm.notebook import tqdm
-import numpy as np
-import json
-from datetime import datetime
-import matplotlib.pyplot as plt
-
 from myutman.stand_utils import calc_error
-import os
+
 
 class Stand:
     def __init__(
         self,
         n_nodes,
         algo: Type[StreamingAlgo],
-        client_node_distribution: Type[NodeDistribution],
-        terminal_node_distribution: Type[NodeDistribution],
+        account1_node_distribution: Type[NodeDistribution],
+        account2_node_distribution: Type[NodeDistribution],
         fuse: Fuse,
-        client_algo_kwargs: Optional[Dict[str, Any]] = None,
-        terminal_algo_kwargs: Optional[Dict[str, Any]] = None
+        account1_algo_kwargs: Optional[Dict[str, Any]] = None,
+        account2_algo_kwargs: Optional[Dict[str, Any]] = None
     ) -> None:
         self.n_nodes = n_nodes
         self.algo = algo
-        self.client_node_distribution = client_node_distribution(n_nodes)
-        self.terminal_node_distribution = terminal_node_distribution(n_nodes)
+        self.account1_node_distribution = account1_node_distribution(n_nodes)
+        self.account2_node_distribution = account2_node_distribution(n_nodes)
         self.result_filename = f"outputs/algo={algo.__name__}_" \
-                               f"client_dist={client_node_distribution.__name__}_" \
-                               f"terminal_dist={terminal_node_distribution.__name__}_" \
+                               f"account1_dist={account1_node_distribution.__name__}_" \
+                               f"account2_dist={account2_node_distribution.__name__}_" \
                                f"nnodes={n_nodes}"
         self.fuse = fuse
-        if client_algo_kwargs is None:
-            self.client_algo_kwargs: Dict[str, Any] = {}
+        if account1_algo_kwargs is None:
+            self.account1_algo_kwargs: Dict[str, Any] = {}
         else:
-            self.client_algo_kwargs: Dict[str, Any] = client_algo_kwargs
-        if terminal_algo_kwargs is None:
-            self.terminal_algo_kwargs: Dict[str, Any] = {}
+            self.account1_algo_kwargs: Dict[str, Any] = account1_algo_kwargs
+        if account2_algo_kwargs is None:
+            self.account2_algo_kwargs: Dict[str, Any] = {}
         else:
-            self.terminal_algo_kwargs: Dict[str, Any] = terminal_algo_kwargs
+            self.account2_algo_kwargs: Dict[str, Any] = account2_algo_kwargs
         os.system('mkdir -p outputs')
 
     def test(
@@ -50,33 +48,40 @@ class Stand:
         sample: List[Tuple[Any, float]],
         change_points: List[int],
         change_ids: List[Tuple[int, int]],
-        n_clients,
-        n_terminals
+        n_account1s,
+        n_account2s
     ) -> Dict[str, float]:
-        nodes: np.ndarray = np.array([  # List[Tuple[List[StreamingAlgo], List[StreamingAlgo]]] = np.array([
-            ([self.algo(p, **self.client_algo_kwargs) for _ in range(n_clients)],
-             [self.algo(p, **self.terminal_algo_kwargs) for _ in range(n_terminals)
-              ]) for _ in range(self.n_nodes)
+        nodes1: np.ndarray = np.array([
+            [
+                self.algo(p, **self.account1_algo_kwargs) for _ in range(n_account1s)
+            ] for _ in range(self.n_nodes)
+        ])
+        nodes2: np.ndarray = np.array([
+            [
+                self.algo(p, **self.account2_algo_kwargs) for _ in range(n_account2s)
+            ] for _ in range(self.n_nodes)
         ])
         detected: List[int] = []
         detected_ids: List[Tuple[int, int]] = []
-        for i, ((client_id, terminal_id), point) in tqdm(enumerate(sample)):
-            client_node_id = self.client_node_distribution.get_node_index(client_id, terminal_id)
-            terminal_node_id = self.terminal_node_distribution.get_node_index(terminal_id, client_id)
-            nodes[client_node_id][0][client_id].process_element(point)
-            nodes[terminal_node_id][1][terminal_id].process_element(point)
+        for i, ((account1_id, account2_id), point) in tqdm(enumerate(sample)):
             detection = False
             detection_ids = [-1, -1]
-            if self.fuse(p, nodes[:, 1, terminal_id]):
-                detection = True
-                detection_ids[1] = terminal_id
-                for algo in nodes[:, 1, terminal_id]:
-                    algo.restart()
-            if self.fuse(p, nodes[:, 0, client_id]):
-                detection = True
-                detection_ids[0] = client_id
-                for algo in nodes[:, 0, client_id]:
-                    algo.restart()
+            if n_account1s > 0:
+                account1_node_id = self.account1_node_distribution.get_node_index(account1_id, account2_id)
+                nodes1[account1_node_id][account1_id].process_element(point)
+                if self.fuse(p, nodes1[:, account1_id]):
+                    detection = True
+                    detection_ids[0] = account1_id
+                    for algo in nodes1[:, account1_id]:
+                        algo.restart()
+            if n_account2s > 0:
+                account2_node_id = self.account2_node_distribution.get_node_index(account2_id, account1_id)
+                nodes2[account2_node_id][account2_id].process_element(point)
+                if self.fuse(p, nodes2[:, account2_id]):
+                    detection = True
+                    detection_ids[1] = account2_id
+                    for algo in nodes2[:, account2_id]:
+                        algo.restart()
             if detection:
                 detected.append(i)
                 detected_ids.append(tuple(detection_ids))
@@ -84,8 +89,8 @@ class Stand:
         error = calc_error(change_points, change_ids, detected, detected_ids)
         output_json = {
             "name": self.result_filename,
-            "n_clients": n_clients,
-            "n_terminals": n_terminals,
+            "n_account1s": n_account1s,
+            "n_account2s": n_account2s,
             "error": error,
             "sample": sample,
             "change_points": change_points,
@@ -108,7 +113,7 @@ class Stand:
         self,
         algos: List[Type[StreamingAlgo]],
         fuses: List[Fuse],
-        client_node_distributions: List[Type[NodeDistribution]],
+        account1_node_distributions: List[Type[NodeDistribution]],
 
         sample_generations: List[Type[SampleGeneration]]
     ):

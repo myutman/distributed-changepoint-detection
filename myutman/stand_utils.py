@@ -4,7 +4,64 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-def calc_error(change_points: List[int], change_ids: List[Tuple[int, int]], detected: List[int], detected_ids: List[Tuple[int, int]]) -> Dict[str, float]:
+def calc_error(change_points: List[int], detected: List[int]) -> Dict[str, float]:
+    changes = 0
+    detections = 0
+    missed_changes = 0
+    true_detections = 0
+    false_detections = 0
+    late_detections = 0
+
+    currently_detecting_change = 0
+    latency = 0
+
+    j = 0
+    previous_was_missed = False
+    for i, d in enumerate(change_points):
+        changes += 1
+        # skip all false detections before change_points[i]
+        while j < len(detected) and detected[j] < d:
+            detections += 1
+            false_detections += 1
+            j += 1
+
+        # if change_points[i] and change_points[i+1] occur without detection then a missed detection
+        if j == len(detected) or (i + 1 < len(change_points) and change_points[i + 1] <= detected[j]):
+            missed_changes += 1
+            if not previous_was_missed:
+                currently_detecting_change = d
+                previous_was_missed = True
+        else:
+            detections += 1
+            if previous_was_missed:
+                latency += detected[j] - currently_detecting_change
+                late_detections += 1
+            else:
+                latency += detected[j] - d
+                true_detections += 1
+            previous_was_missed = False
+            j += 1
+    while j < len(detected):
+        detections += 1
+        false_detections += 1
+        j += 1
+
+    return {
+        'changes': changes,
+        'detections': detections,
+        'true_detections': true_detections,
+        'false_detections': false_detections,
+        'late_detections': late_detections,
+        'total_errored_detections': false_detections + late_detections,
+        'missed_changes': missed_changes,
+        'TDR': (true_detections / changes) if changes > 0 else None,
+        'MDR': (1 - true_detections / changes) if changes > 0 else None,
+        'FDR': (false_detections / detections) if detections > 0 else None,
+        'latency': (latency / (true_detections + late_detections)) if (true_detections + late_detections) > 0 else None
+    }
+
+
+"""def calc_error(change_points: List[int], change_ids: List[Tuple[int, int]], detected: List[int], detected_ids: List[Tuple[int, int]]) -> Dict[str, float]:
     account1_detection = 0
     account2_detection = 0
 
@@ -74,7 +131,7 @@ def calc_error(change_points: List[int], change_ids: List[Tuple[int, int]], dete
         'account2_False': account2_detection - correct_account2_detection - account2_cross_detection,
         'account1_latency': account1_latency / correct_account1_detection if correct_account1_detection > 0 else None,
         'account2_latency': account2_latency / correct_account2_detection if correct_account2_detection > 0 else None
-    }
+    }"""
 
 
 def compare_mdrs(result1: List[Dict[str, float]], result2: List[Dict[str, float]], legend1: str, legend2: str):

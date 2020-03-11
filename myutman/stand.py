@@ -53,13 +53,21 @@ class Stand:
     ) -> Dict[str, float]:
         nodes1: np.ndarray = np.array([
             [
-                self.algo(p, **self.account1_algo_kwargs) for _ in range(n_account1s)
-            ] for _ in range(self.n_nodes)
+                self.algo(
+                    p=p,
+                    random_state=i + j * n_account1s,
+                    **self.account1_algo_kwargs
+                ) for i in range(n_account1s)
+            ] for j in range(self.n_nodes)
         ])
         nodes2: np.ndarray = np.array([
             [
-                self.algo(p, **self.account2_algo_kwargs) for _ in range(n_account2s)
-            ] for _ in range(self.n_nodes)
+                self.algo(
+                    p=p,
+                    random_state=i + j * n_account2s,
+                    **self.account2_algo_kwargs
+                ) for i in range(n_account2s)
+            ] for j in range(self.n_nodes)
         ])
         detected: List[int] = []
         detected_ids: List[Tuple[int, int]] = []
@@ -86,7 +94,7 @@ class Stand:
                 detected.append(i)
                 detected_ids.append(tuple(detection_ids))
 
-        error = calc_error(change_points, change_ids, detected, detected_ids)
+        error = calc_error(change_points, detected)#change_ids, detected, detected_ids)
         output_json = {
             "name": self.result_filename,
             "n_account1s": n_account1s,

@@ -1,10 +1,10 @@
-from typing import Tuple, Optional
+from collections import deque
+from typing import Tuple, Optional, List
 
 import numpy as np
 
 from myutman.distance import KolmogorovSmirnovDistance, Distance
 from myutman.single_thread import StreamingAlgo
-from collections import deque
 
 
 class TreeNode():
@@ -112,29 +112,45 @@ class WindowPair:
 
 
 class WindowStreamingAlgo(StreamingAlgo):
-    def __init__(self, p, l=None, window_sizes=None):#, dist: Distance = KolmogorovSmirnovDistance()):
-        super().__init__(p)
-        if l is None:
-            l = 30
-        self.l = l
-        self.rnd = np.random.RandomState(0)
+    def __init__(
+        self,
+        p: float,
+        n_iter: int,
+        window_sizes: Optional[List[Tuple[int, int]]] = None,
+        random_state: int = 0
+    ):
+        super().__init__(p, random_state)
         if window_sizes is None:
-            #window_sizes = [(50 + self.rnd.choice(30), 50 + self.rnd.choice(30)) for _ in range(3)]
-            window_sizes = [(20, 20), (30, 30), (40, 40)]
+            window_sizes = [(200, 200), (400, 400), (800, 800), (1600, 1600)]
         self.window_count = len(window_sizes)
-        self.window_pairs = [[WindowPair(sizes) for _ in range(l + 1)] for sizes in window_sizes]
+        self.rnd = np.random.RandomState(random_state)
+
+        # TODO: remove after experiments
+        self.vec = np.load(f'precalced_quantiles_{n_iter}_iter.npy')
+        for i in range(self.window_count):
+            self.vec[i, :] = self.rnd.permutation(self.vec[i, :])
+        # print(f'quantile inside window algo: {np.quantile(self.vec[0], 0.99)}')
+        self.window_pairs = [
+            WindowPair(sizes) for sizes in window_sizes
+        ]
 
     def process_element(self, element, meta=None):
         for k in range(self.window_count):
-            self.window_pairs[k][0].add_point(element)
-            for j in range(1, self.l + 1):
-                self.window_pairs[k][j].add_point(self.rnd.uniform(0, 1))
+            self.window_pairs[k].add_point(element)
+            #for j in range(1, self.l + 1):
+            #    self.window_pairs[k][j].add_point(self.rnd.uniform(0, 1))
 
     def get_stat(self):
+        #tmp = np.array([
+        #    [self.window_pairs[i][j].get_stat() for j in range(self.l + 1)] for i in range(self.window_count)
+        #])
+        #return tmp
         tmp = np.array([
-            [self.window_pairs[i][j].get_stat() for j in range(self.l + 1)] for i in range(self.window_count)
+            [self.window_pairs[i].get_stat()] for i in range(self.window_count)
         ])
-        return tmp
+        stat = np.concatenate([tmp, self.vec], axis=-1)
+        #print(f'quantile inside window algo get_stat: {np.quantile(stat[0][1:], 0.99)}')
+        return stat
 
     def get_thresholds(self):
         thresholds = np.quantile(self.get_stat()[:,1:], 1 - self.p, axis=-1)
@@ -144,6 +160,8 @@ class WindowStreamingAlgo(StreamingAlgo):
         return np.any(self.get_thresholds() < self.get_stat()[:,0])
 
     def restart(self):
-        for list_pair in self.window_pairs:
-            for pair in list_pair:
-                pair.clear()
+        #for list_pair in self.window_pairs:
+        #    for pair in list_pair:
+        #        pair.clear()
+        for pair in self.window_pairs:
+            pair.clear()

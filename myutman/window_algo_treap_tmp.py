@@ -115,26 +115,36 @@ class WindowStreamingAlgo(StreamingAlgo):
     def __init__(self, p, l=None, window_sizes=None):#, dist: Distance = KolmogorovSmirnovDistance()):
         super().__init__(p)
         if l is None:
-            l = 30
+            l = 100
         self.l = l
         self.rnd = np.random.RandomState(0)
         if window_sizes is None:
             #window_sizes = [(50 + self.rnd.choice(30), 50 + self.rnd.choice(30)) for _ in range(3)]
             window_sizes = [(20, 20), (30, 30), (40, 40)]
+
+        # TODO: remove after experiments
+        self.vecs = np.load('precalced_quantiles.npy')
         self.window_count = len(window_sizes)
-        self.window_pairs = [[WindowPair(sizes) for _ in range(l + 1)] for sizes in window_sizes]
+        self.window_pairs = [WindowPair(sizes) for sizes in window_sizes] #[[WindowPair(sizes) for _ in range(l + 1)] for sizes in window_sizes]
 
     def process_element(self, element, meta=None):
         for k in range(self.window_count):
-            self.window_pairs[k][0].add_point(element)
-            for j in range(1, self.l + 1):
-                self.window_pairs[k][j].add_point(self.rnd.uniform(0, 1))
+            self.window_pairs[k].add_point(element)
+            #for j in range(1, self.l + 1):
+            #    self.window_pairs[k][j].add_point(self.rnd.uniform(0, 1))
 
     def get_stat(self):
+        #tmp = np.array([
+        #    [self.window_pairs[i][j].get_stat() for j in range(self.l + 1)] for i in range(self.window_count)
+        #])
+        #return tmp
         tmp = np.array([
-            [self.window_pairs[i][j].get_stat() for j in range(self.l + 1)] for i in range(self.window_count)
+            [self.window_pairs[i].get_stat()] for i in range(self.window_count)
         ])
-        return tmp
+        vec1 = np.vstack([
+            self.vecs[min(self.window_pairs[i].grace, self.vecs.shape[0] - 1)][i] for i in range(self.window_count)
+        ])
+        return np.concatenate([tmp, vec1], axis=-1)
 
     def get_thresholds(self):
         thresholds = np.quantile(self.get_stat()[:,1:], 1 - self.p, axis=-1)
@@ -144,6 +154,8 @@ class WindowStreamingAlgo(StreamingAlgo):
         return np.any(self.get_thresholds() < self.get_stat()[:,0])
 
     def restart(self):
-        for list_pair in self.window_pairs:
-            for pair in list_pair:
-                pair.clear()
+        #for list_pair in self.window_pairs:
+        #    for pair in list_pair:
+        #        pair.clear()
+        for pair in self.window_pairs:
+            pair.clear()

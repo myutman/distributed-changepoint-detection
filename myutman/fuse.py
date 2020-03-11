@@ -20,9 +20,14 @@ class FuseForWindowAlgo(Fuse):
 
     def __init__(self):
         super(FuseForWindowAlgo, self).__init__()
+        self.count = 0
 
     def fuse(self, p: float, nodes: List[StreamingAlgo]) -> bool:
+        self.count += 1
         stats = [node.get_stat() for node in nodes]
         stat = np.max(stats, axis=0)
         thresholds = np.quantile(stat[:, 1:], 1 - p, axis=-1)
-        return np.any(thresholds < stat[:, 0] - FuseForWindowAlgo.EPS)
+        ans = np.any(thresholds < stat[:, 0] - FuseForWindowAlgo.EPS)
+        # if ans:
+        #    print(np.quantile(stats[0][0][1:], 0.99))
+        return ans

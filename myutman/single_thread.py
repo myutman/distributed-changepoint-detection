@@ -4,8 +4,9 @@ from typing import Any
 
 class StreamingAlgo:
 
-    def __init__(self, p):
+    def __init__(self, p, random_state):
         self.p = p
+        self.random_state = random_state
 
     @abc.abstractmethod
     def process_element(self, element: float, meta: Any = None) -> None:

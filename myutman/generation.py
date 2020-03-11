@@ -453,25 +453,20 @@ class StillSampleGeneration(SampleGeneration):
         change_interval: int = 100,
         delta: float = 10,
         delta_noise: float = 1
-    ) -> Tuple[List[Tuple[Tuple[int, int], float]], List[int]]:
-        client_order = self.rnd.choice(n_clients, size=n_clients, replace=False)
-        client_probabilities = 1 / (1 + client_order)
-        client_probabilities /= client_probabilities.sum()
-        terminal_order = np.array(
-            [self.rnd.choice(n_terminals, size=n_terminals, replace=False) for _ in range(n_clients)])
-        terminal_probabilities = 1 / (1 + terminal_order)
-        terminal_probabilities /= terminal_probabilities.sum(axis=-1)
+    ) -> Tuple[List[Tuple[Tuple[int, int], float]], List[int], List[Tuple[int, int]]]:
+        #client_order = self.rnd.choice(n_clients, size=n_clients, replace=False)
+        #client_probabilities = 1 / (1 + client_order)
+        #client_probabilities /= client_probabilities.sum()
+        #terminal_order = np.array(
+        #    [self.rnd.choice(n_terminals, size=n_terminals, replace=False) for _ in range(n_clients)])
+        #terminal_probabilities = 1 / (1 + terminal_order)
+        #terminal_probabilities /= terminal_probabilities.sum(axis=-1)
 
         sample = []
-        change_points = []
-        a = self.rnd.lognormal(mean=np.log(10), size=n_clients)
-        b = self.rnd.lognormal(mean=np.log(10), size=n_terminals)
-        mu = a.reshape(-1, 1) @ b.reshape(1, -1)
+        #mu = 5
         for i in range(size):
-            client_id = self.rnd.choice(n_clients, p=client_probabilities)
-            terminal_id = self.rnd.choice(n_clients, p=terminal_probabilities[client_id])
-            sample.append(((client_id, terminal_id), self.rnd.normal(mu[client_id][terminal_id], 1)))
-        return sample, change_points
+            sample.append(((0, -1), self.rnd.uniform(0, 1)))
+        return sample, [], []
 
 
 class LogExpChangeSampleGeneration(SampleGeneration):
@@ -521,6 +516,34 @@ class OriginalExperiment1UniformSampleGeneration(SampleGeneration):
                 param = abs(param + self.rnd.uniform(-param_noise, param_noise))
                 change_points.append(i)
                 change_ids.append((0, -1))
-            sample.append(((0, 0), self.rnd.uniform(-param, param)))
+            sample.append(((0, -1), self.rnd.uniform(-param, param)))
 
+        return sample, change_points, change_ids
+
+class OriginalExperiment2NormalUniformMixtureSampleGeneration(SampleGeneration):
+    def generate(
+        self,
+        size: int,
+        probs: List[float] = None,
+        change_period: float = 200,
+        change_period_noise: float = 1
+    ) -> Tuple[List[Tuple[Tuple[int, int], float]], List[int], List[Tuple[int, int]]]:
+        sample = []
+        change_points = []
+        change_ids = []
+        param = 0.9
+        param_noise = 0.05
+        limit = int(self.rnd.normal(change_period, change_period_noise))
+        for i in range(size):
+            if i == limit:
+                limit += int(self.rnd.normal(change_period, change_period_noise))
+                param = param + self.rnd.uniform(-param_noise, param_noise)
+                if param > 1:
+                    param = 1 - (param - 1)
+                change_points.append(i)
+                change_ids.append((0, -1))
+            if self.rnd.choice(2, p=[param, 1 - param]) == 1:
+                sample.append(((0, -1), self.rnd.uniform(-7, 7)))
+            else:
+                sample.append(((0, -1), self.rnd.normal(loc=0, scale=1)))
         return sample, change_points, change_ids

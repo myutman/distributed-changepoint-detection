@@ -10,7 +10,6 @@ myutman/precalc_qunatiles/precalced_quantiles_12500_iter_tmp.npy filter=lfs diff
 myutman/precalc_qunatiles/precalced_quantiles_1250_iter_tmp.npy filter=lfs diff=lfs merge=lfs -text
 myutman/precalc_qunatiles/precalced_quantiles_50000_iter_tmp.npy filter=lfs diff=lfs merge=lfs -text
 myutman/precalc_qunatiles/precalced_quantiles_6250_iter_tmp.npy filter=lfs diff=lfs merge=lfs -text
-myutman/precalc_qunatiles/precalced_quantiles.npy filter=lfs diff=lfs merge=lfs -text
 myutman/precalc_qunatiles/precalced_quantiles_12500_iter.npy filter=lfs diff=lfs merge=lfs -text
 myutman/precalc_qunatiles/precalced_quantiles_3125_iter_tmp.npy filter=lfs diff=lfs merge=lfs -text
 myutman/precalc_qunatiles/precalced_quantiles_5000_iter_tmp.npy filter=lfs diff=lfs merge=lfs -text

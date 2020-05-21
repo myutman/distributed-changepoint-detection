@@ -520,6 +520,7 @@ class OriginalExperiment1UniformSampleGeneration(SampleGeneration):
 
         return sample, change_points, change_ids
 
+
 class OriginalExperiment2NormalUniformMixtureSampleGeneration(SampleGeneration):
     def generate(
         self,

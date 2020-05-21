@@ -122,7 +122,7 @@ class WindowStreamingAlgo(StreamingAlgo):
             window_sizes = [(20, 20), (30, 30), (40, 40)]
 
         # TODO: remove after experiments
-        self.vecs = np.load('../precalc_qunatiles/precalced_quantiles.npy')
+        #self.vecs = np.load('../precalc_qunatiles/precalced_quantiles.npy')
         self.window_count = len(window_sizes)
         self.window_pairs = [WindowPair(sizes) for sizes in window_sizes] #[[WindowPair(sizes) for _ in range(l + 1)] for sizes in window_sizes]
 

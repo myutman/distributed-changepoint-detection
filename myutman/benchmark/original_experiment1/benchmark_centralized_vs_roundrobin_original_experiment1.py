@@ -1,18 +1,10 @@
 import json
-from importlib import reload
-
-import myutman
-
-reload(myutman.stand.stand.stand_utils)
-reload(myutman.stand.stand)
-reload(myutman.streaming_algo.window_algo)
-reload(myutman.generation.generation)
-reload(myutman.fuse.fuse)
+import os
 
 from myutman.fuse.fuse import FuseForWindowAlgo
 from myutman.generation.generation import OriginalExperiment1UniformSampleGeneration
 from myutman.node_distribution.node_distribution import RoundrobinNodeDistribution
-from myutman.stand import Stand
+from myutman.stand.stand import Stand
 from myutman.streaming_algo.window_algo import WindowStreamingAlgo
 
 if __name__ == '__main__':
@@ -74,5 +66,10 @@ if __name__ == '__main__':
                     )
                     print(result1)
                     results[i][j][k].append(result1)
-        with open(f'centralized_vs_roundrobin_p={p_levels}_nnodes={n_nodess}_original_experiment1_algo_20k_iter_no_change_period_noise.json', 'w') as output_file:
+
+        path = os.path.join(
+            os.path.dirname(__file__),
+            f'../../results/centralized_vs_roundrobin_p={p_levels}_nnodes={n_nodess}_original_experiment1_algo_20k_iter_no_change_period_noise.json'
+        )
+        with open(path, 'w') as output_file:
             json.dump(results, output_file, indent=4, ensure_ascii=False)

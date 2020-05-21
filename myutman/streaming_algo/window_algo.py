@@ -1,6 +1,7 @@
 import os
 from collections import deque
-from typing import Tuple, Optional, List
+from typing import Tuple, Optional, List, Type, Union
+import abc
 
 import numpy as np
 
@@ -62,17 +63,33 @@ def merge(node_l: Optional[TreeNode], node_r: Optional[TreeNode]) -> Optional[Tr
     return node_r
 
 
-class WindowPair:
-    def __init__(self, sizes):#, dist: Distance = KolmogorovSmirnovDistance()):
-        self.sizes = sizes
-        #self.__dist = dist
+class WindowTest:
+    def __init__(self, reference: Union[List[float], np.ndarray], sliding: Union[List[float], np.ndarray]):
+        self.reference = deque(reference)
+        self.sliding = deque(sliding)
+
+    @abc.abstractmethod
+    def add_point(self, point: float):
+        pass
+
+    @abc.abstractmethod
+    def get_stat(self):
+        pass
+
+
+class TreapWindowTest(WindowTest):
+    def __init__(self, reference: Union[List[float], np.ndarray], sliding: Union[List[float], np.ndarray]):#, dist: Distance = KolmogorovSmirnovDistance()):
+        super(TreapWindowTest, self).__init__(reference, sliding)
         self.rnd = np.random.RandomState(0)
-        self.reference = deque()
-        self.sliding = deque()
         self.max = 0
         self.stat = 0
         self.grace = 0
         self.root = None
+
+        for key in reference:
+            self.insert(key, -1 / len(reference))
+        for key in sliding:
+            self.insert(key, 1 / len(sliding))
 
     def insert(self, key, value):
         l, r = split(self.root, key)
@@ -84,31 +101,18 @@ class WindowPair:
         l1, r2 = split(r, key + 2 * TreeNode.EPS)
         self.root = merge(l, r2)
 
-    def add_point(self, point):
-        self.grace += 1
-        if len(self.reference) < self.sizes[0]:
-            self.reference.append(point)
-            self.insert(point, - 1 / self.sizes[0])
-        else:
-            if len(self.sliding) == self.sizes[1]:
-                key = self.sliding.popleft()
-                self.erase(key)
-            self.sliding.append(point)
-            self.insert(point, 1 / self.sizes[1])
-        if self.grace >= self.sizes[0] + self.sizes[1]:
-            self.stat = 0 if self.root is None else max(abs(self.root.min), abs(self.root.max))
-            self.max = max(self.max, self.stat)
+    def add_point(self, point: float):
+        key = self.sliding.popleft()
+        self.sliding.append(point)
+
+        self.erase(key)
+        self.insert(point, 1 / len(self.sliding))
+
+        self.stat = 0 if self.root is None else max(abs(self.root.min), abs(self.root.max))
+        self.max = max(self.max, self.stat)
 
     def get_stat(self):
         return self.max
-
-    def clear(self):
-        self.root = None
-        self.reference.clear()
-        self.sliding.clear()
-        self.max = 0
-        self.stat = 0
-        self.grace = 0
 
 
 class WindowStreamingAlgo(StreamingAlgo):
@@ -117,54 +121,66 @@ class WindowStreamingAlgo(StreamingAlgo):
         p: float,
         n_iter: int,
         window_sizes: Optional[List[Tuple[int, int]]] = None,
-        random_state: int = 0
+        random_state: int = 0,
+        window_test_type: Type[WindowTest] = TreapWindowTest
     ):
         super().__init__(p, random_state)
         if window_sizes is None:
             window_sizes = [(200, 200), (400, 400), (800, 800), (1600, 1600)]
-        self.window_count = len(window_sizes)
+        self.window_sizes: List[Tuple[int, int]] = window_sizes
         self.rnd = np.random.RandomState(random_state)
+        self.window_test_type = window_test_type
+        self.grace = 0
 
-        # TODO: remove after experiments
         self.vec = np.load(os.path.join(
             os.path.dirname(__file__),
-            f'../precalc_qunatiles/precalced_quantiles_{n_iter}_iter.npy'
-        ))
-        for i in range(self.window_count):
+            f'../precalc_qunatiles/precalced_quantiles_{n_iter}_iter_tmp.npy'
+        ))[[[200, 400, 800, 1600].index(s) for s, _ in window_sizes]]
+
+        print(self.vec.shape)
+
+        for i, _ in enumerate(window_sizes):
             self.vec[i, :] = self.rnd.permutation(self.vec[i, :])
-        # print(f'quantile inside window algo: {np.quantile(self.vec[0], 0.99)}')
-        self.window_pairs = [
-            WindowPair(sizes) for sizes in window_sizes
+
+        self.buffer = []
+        self.window_tests: List[Optional[WindowTest]] = [
+            None for _ in self.window_sizes
         ]
 
     def process_element(self, element, meta=None):
-        for k in range(self.window_count):
-            self.window_pairs[k].add_point(element)
-            #for j in range(1, self.l + 1):
-            #    self.window_pairs[k][j].add_point(self.rnd.uniform(0, 1))
+        enough = True
+        for size_reference, size_sliding in self.window_sizes:
+            if self.grace < size_reference + size_sliding:
+                enough = False
+        if not enough:
+            self.buffer.append(element)
+        self.grace += 1
+        for i, (size_reference, size_sliding) in enumerate(self.window_sizes):
+            if self.grace == size_reference + size_sliding:
+                print(f'ref_size={size_reference}, slide_size={size_sliding}')
+                reference = self.buffer[:size_reference]
+                sliding = self.buffer[-size_sliding:]
+                self.window_tests[i] = self.window_test_type(reference, sliding)
+            elif self.grace > size_reference + size_sliding:
+                self.window_tests[i].add_point(element)
 
     def get_stat(self):
         #tmp = np.array([
-        #    [self.window_pairs[i][j].get_stat() for j in range(self.l + 1)] for i in range(self.window_count)
+        #    [0 if window_test is None else window_test.get_stat()] for window_test in self.window_tests
         #])
-        #return tmp
-        tmp = np.array([
-            [self.window_pairs[i].get_stat()] for i in range(self.window_count)
-        ])
-        stat = np.concatenate([tmp, self.vec], axis=-1)
-        #print(f'quantile inside window algo get_stat: {np.quantile(stat[0][1:], 0.99)}')
-        return stat
+        #stat = np.concatenate([tmp, self.vec], axis=-1)
+        return np.array([0 if window_test is None else window_test.get_stat() for window_test in self.window_tests])
 
-    def get_thresholds(self):
+    """def get_thresholds(self):
         thresholds = np.quantile(self.get_stat()[:,1:], 1 - self.p, axis=-1)
-        return thresholds
+        return thresholds"""
 
-    def test(self):
-        return np.any(self.get_thresholds() < self.get_stat()[:,0])
+    """def test(self):
+        return np.any(self.get_thresholds() < self.get_stat()[:,0])"""
 
     def restart(self):
-        #for list_pair in self.window_pairs:
-        #    for pair in list_pair:
-        #        pair.clear()
-        for pair in self.window_pairs:
-            pair.clear()
+        self.grace = 0
+        self.buffer.clear()
+        self.window_tests = [
+            None for _ in self.window_sizes
+        ]

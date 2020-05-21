@@ -42,8 +42,6 @@ class Stand:
             stand_name
         )
 
-        self.fuse = fuse()
-
         logfile = os.path.join(
             os.path.dirname(__file__),
             '../logs',
@@ -55,6 +53,8 @@ class Stand:
         handler = logging.handlers.RotatingFileHandler(logfile)
         self.logger.addHandler(handler)
         self.logger.setLevel(logging.DEBUG)
+
+        self.fuse_type = fuse
 
         if account1_algo_kwargs is None:
             self.account1_algo_kwargs: Dict[str, Any] = {}
@@ -84,6 +84,7 @@ class Stand:
                 ) for i in range(n_account1s)
             ] for j in range(self.n_nodes)
         ])
+        fuse =  self.fuse_type(p, self.n_nodes, **self.account1_algo_kwargs)
         nodes2: np.ndarray = np.array([
             [
                 self.algo(
@@ -95,13 +96,15 @@ class Stand:
         ])
         detected: List[int] = []
         detected_ids: List[Tuple[int, int]] = []
+
         for i, ((account1_id, account2_id), point) in tqdm(enumerate(sample)):
             detection = False
             detection_ids = [-1, -1]
             if n_account1s > 0:
                 account1_node_id = self.account1_node_distribution.get_node_index(account1_id, account2_id)
                 nodes1[account1_node_id][account1_id].process_element(point)
-                if self.fuse(p, nodes1[:, account1_id]):
+                stats1 = [node.get_stat() for node in nodes1[:, account1_id]]
+                if fuse(stats1):
                     detection = True
                     detection_ids[0] = account1_id
                     for algo in nodes1[:, account1_id]:
@@ -109,13 +112,15 @@ class Stand:
             if n_account2s > 0:
                 account2_node_id = self.account2_node_distribution.get_node_index(account2_id, account1_id)
                 nodes2[account2_node_id][account2_id].process_element(point)
-                if self.fuse(p, nodes2[:, account2_id]):
+
+                stats2 = [node.get_stat() for node in nodes2[:, account2_id]]
+                if fuse(stats2):
                     detection = True
                     detection_ids[1] = account2_id
                     for algo in nodes2[:, account2_id]:
                         algo.restart()
             if i % 1000 == 0:
-                self.logger.debug(f"thresholds={self.fuse.thresholds}, stats={self.fuse.stat[:,0]}")
+                self.logger.debug(f"thresholds={fuse.thresholds}, stats={fuse.stat}")
             if detection:
                 detected.append(i)
                 detected_ids.append(tuple(detection_ids))
@@ -134,9 +139,9 @@ class Stand:
         }
 
         output_filename = f"{self.result_filename}_{datetime.now().timestamp()}.json"
-        print(f"Result written to {output_filename}")
-        with open(output_filename, 'w') as output_file:
-            json.dump(output_json, output_file, ensure_ascii=False, indent=4)
+        #print(f"Result written to {output_filename}")
+        #with open(output_filename, 'w') as output_file:
+        #    json.dump(output_json, output_file, ensure_ascii=False, indent=4)
 
         return error
 

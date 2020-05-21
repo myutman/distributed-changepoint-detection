@@ -172,14 +172,22 @@ def show_boxplots(val_name: str, results: List[List[Dict[str, float]]], legends:
 
 
 def show_plot_by_p_levels(val_name: str, resultss: List[List[List[Dict[str, float]]]], legends: List[str]):
-    valss = [[np.median([res[val_name] for res in result if res[val_name] is not None]) for result in results] for results in resultss]
+    valss = [[np.mean([res[val_name] for res in result if res[val_name] is not None]) for result in results] for results in resultss]
     for vals in valss:
-        #plt.boxplot(vals, labels=['p=0.01', 'p=0.05', 'p=0.1'])
         plt.plot(['p=0.01', 'p=0.05', 'p=0.1'], vals)
     plt.legend(legends)
     plt.ylabel(val_name)
     plt.show()
 
+def show_plot_by_nnodes(val_name: str, resultss: List[List[List[Dict[str, float]]]], legend: List[str]):
+    plt.rcParams.update({'font.size': 13})
+    valss = [[np.mean([res[val_name] for res in result if res[val_name] is not None]) for result in results] for results in resultss]
+    for vals in valss:
+        plt.plot([1, 4, 8, 16], vals)
+    plt.legend(legend)
+    plt.ylabel(val_name)
+    plt.xlabel('Number of nodes')
+    plt.show()
 
 def show_boxplots_by_p_levels(val_name: str, resultss: List[List[List[Dict[str, float]]]], legends: List[str]):
     valss = np.array([[[res[val_name] for res in result if res[val_name] is not None] for result in results] for

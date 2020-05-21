@@ -1,4 +1,5 @@
 import json
+import os
 
 from myutman.fuse.fuse import MedianFuseForWindowAlgo
 from myutman.generation.generation import OriginalExperiment1UniformSampleGeneration
@@ -65,5 +66,10 @@ if __name__ == '__main__':
                     )
                     print(result1)
                     results[i][j][k].append(result1)
-        with open(f'centralized_vs_roundrobin_p={p_levels}_nnodes={n_nodess}_original_experiment1_median_fuse_rule_algo_20k_iter_no_change_period_noise.json', 'w') as output_file:
+
+        path = os.path.join(
+            os.path.dirname(__file__),
+            f'../../results/centralized_vs_roundrobin_p={p_levels}_nnodes={n_nodess}_original_experiment1_median_fuse_rule_algo_20k_iter_no_change_period_noise.json'
+        )
+        with open(path, 'w') as output_file:
             json.dump(results, output_file, indent=4, ensure_ascii=False)

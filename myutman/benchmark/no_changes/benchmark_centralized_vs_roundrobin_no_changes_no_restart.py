@@ -6,7 +6,8 @@ from myutman.fuse.fuse import FuseForWindowAlgo
 from myutman.generation.generation import StillSampleGeneration
 from myutman.node_distribution.node_distribution import RoundrobinNodeDistribution
 from myutman.stand.stand import Stand
-from myutman.streaming_algo.window_algo import WindowStreamingAlgo
+
+from myutman.streaming_algo.window_algo_no_restart import WindowStreamingAlgoNoRestart
 
 
 def run(stands, generations, p_level):
@@ -30,26 +31,24 @@ def run(stands, generations, p_level):
                 print(result1)
                 results[i][j].append(result1)
 
-        path = os.path.join(
-            os.path.dirname(__file__),
-            # f'../../results/centralized_vs_roundrobin_p={p_level}_nnodes={n_nodess}_no_changes_algo_20k_iter.json',
-            f'../../results/centralized_vs_roundrobin_p={p_level}_nnodes={n_nodess}_no_changes_algo_50k_iter.json',
-        )
-        with open(path, 'w') as output_file:
-            json.dump(results, output_file, indent=4, ensure_ascii=False)
+    path = os.path.join(
+        os.path.dirname(__file__),
+        f'../../results/centralized_vs_roundrobin_p={p_level}_nnodes={n_nodess}_no_changes_no_restart_algo_20k_iter.json',
+    )
+    with open(path, 'w') as output_file:
+        json.dump(results, output_file, indent=4, ensure_ascii=False)
 
 if __name__ == '__main__':
-    #p_levels = [0.002 * i for i in range(1, 6)]
     p_levels = [0.01, 0.05, 0.1]
     n_nodess = [4, 8, 16]
 
     windows = [(200, 200), (400, 400), (800, 800), (1600, 1600)]
 
-    n_iter = 50000
+    n_iter = 20000
 
     stand_centralized = Stand(
         n_nodes=1,
-        algo=WindowStreamingAlgo,
+        algo=WindowStreamingAlgoNoRestart,
         account1_node_distribution=RoundrobinNodeDistribution,
         account2_node_distribution=RoundrobinNodeDistribution,
         fuse=FuseForWindowAlgo,
@@ -59,7 +58,7 @@ if __name__ == '__main__':
     stand_roundrobins = [
         Stand(
             n_nodes=n_nodes,
-            algo=WindowStreamingAlgo,
+            algo=WindowStreamingAlgoNoRestart,
             account1_node_distribution=RoundrobinNodeDistribution,
             account2_node_distribution=RoundrobinNodeDistribution,
             fuse=FuseForWindowAlgo,

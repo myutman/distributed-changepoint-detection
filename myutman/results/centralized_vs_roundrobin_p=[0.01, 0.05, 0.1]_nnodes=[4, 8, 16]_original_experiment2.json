@@ -1,0 +1,468 @@
+[
+    [
+        [
+            [
+                {
+                    "changes": 100,
+                    "detections": 2450,
+                    "true_detections": 99,
+                    "false_detections": 2351,
+                    "late_detections": 0,
+                    "total_errored_detections": 2351,
+                    "missed_changes": 1,
+                    "TDR": 0.99,
+                    "MDR": 0.010000000000000009,
+                    "FDR": 0.9595918367346938
+                },
+                {
+                    "changes": 100,
+                    "detections": 2418,
+                    "true_detections": 99,
+                    "false_detections": 2319,
+                    "late_detections": 0,
+                    "total_errored_detections": 2319,
+                    "missed_changes": 1,
+                    "TDR": 0.99,
+                    "MDR": 0.010000000000000009,
+                    "FDR": 0.9590570719602978
+                },
+                {
+                    "changes": 100,
+                    "detections": 2406,
+                    "true_detections": 99,
+                    "false_detections": 2307,
+                    "late_detections": 0,
+                    "total_errored_detections": 2307,
+                    "missed_changes": 1,
+                    "TDR": 0.99,
+                    "MDR": 0.010000000000000009,
+                    "FDR": 0.9588528678304239
+                }
+            ],
+            [
+                {
+                    "changes": 100,
+                    "detections": 3603,
+                    "true_detections": 99,
+                    "false_detections": 3504,
+                    "late_detections": 0,
+                    "total_errored_detections": 3504,
+                    "missed_changes": 1,
+                    "TDR": 0.99,
+                    "MDR": 0.010000000000000009,
+                    "FDR": 0.9725228975853455
+                },
+                {
+                    "changes": 100,
+                    "detections": 3519,
+                    "true_detections": 99,
+                    "false_detections": 3420,
+                    "late_detections": 0,
+                    "total_errored_detections": 3420,
+                    "missed_changes": 1,
+                    "TDR": 0.99,
+                    "MDR": 0.010000000000000009,
+                    "FDR": 0.9718670076726342
+                },
+                {
+                    "changes": 100,
+                    "detections": 3561,
+                    "true_detections": 99,
+                    "false_detections": 3462,
+                    "late_detections": 0,
+                    "total_errored_detections": 3462,
+                    "missed_changes": 1,
+                    "TDR": 0.99,
+                    "MDR": 0.010000000000000009,
+                    "FDR": 0.9721988205560236
+                }
+            ],
+            [
+                {
+                    "changes": 100,
+                    "detections": 3916,
+                    "true_detections": 99,
+                    "false_detections": 3817,
+                    "late_detections": 0,
+                    "total_errored_detections": 3817,
+                    "missed_changes": 1,
+                    "TDR": 0.99,
+                    "MDR": 0.010000000000000009,
+                    "FDR": 0.9747191011235955
+                },
+                {
+                    "changes": 100,
+                    "detections": 3828,
+                    "true_detections": 99,
+                    "false_detections": 3729,
+                    "late_detections": 0,
+                    "total_errored_detections": 3729,
+                    "missed_changes": 1,
+                    "TDR": 0.99,
+                    "MDR": 0.010000000000000009,
+                    "FDR": 0.9741379310344828
+                },
+                {
+                    "changes": 100,
+                    "detections": 3866,
+                    "true_detections": 99,
+                    "false_detections": 3767,
+                    "late_detections": 0,
+                    "total_errored_detections": 3767,
+                    "missed_changes": 1,
+                    "TDR": 0.99,
+                    "MDR": 0.010000000000000009,
+                    "FDR": 0.9743921365752716
+                }
+            ]
+        ],
+        [
+            [
+                {
+                    "changes": 100,
+                    "detections": 1214,
+                    "true_detections": 99,
+                    "false_detections": 1115,
+                    "late_detections": 0,
+                    "total_errored_detections": 1115,
+                    "missed_changes": 1,
+                    "TDR": 0.99,
+                    "MDR": 0.010000000000000009,
+                    "FDR": 0.9184514003294892
+                },
+                {
+                    "changes": 100,
+                    "detections": 1219,
+                    "true_detections": 99,
+                    "false_detections": 1120,
+                    "late_detections": 0,
+                    "total_errored_detections": 1120,
+                    "missed_changes": 1,
+                    "TDR": 0.99,
+                    "MDR": 0.010000000000000009,
+                    "FDR": 0.918785890073831
+                },
+                {
+                    "changes": 100,
+                    "detections": 1214,
+                    "true_detections": 99,
+                    "false_detections": 1115,
+                    "late_detections": 0,
+                    "total_errored_detections": 1115,
+                    "missed_changes": 1,
+                    "TDR": 0.99,
+                    "MDR": 0.010000000000000009,
+                    "FDR": 0.9184514003294892
+                }
+            ],
+            [
+                {
+                    "changes": 100,
+                    "detections": 1231,
+                    "true_detections": 99,
+                    "false_detections": 1132,
+                    "late_detections": 0,
+                    "total_errored_detections": 1132,
+                    "missed_changes": 1,
+                    "TDR": 0.99,
+                    "MDR": 0.010000000000000009,
+                    "FDR": 0.9195775792038993
+                },
+                {
+                    "changes": 100,
+                    "detections": 1231,
+                    "true_detections": 99,
+                    "false_detections": 1132,
+                    "late_detections": 0,
+                    "total_errored_detections": 1132,
+                    "missed_changes": 1,
+                    "TDR": 0.99,
+                    "MDR": 0.010000000000000009,
+                    "FDR": 0.9195775792038993
+                },
+                {
+                    "changes": 100,
+                    "detections": 1229,
+                    "true_detections": 99,
+                    "false_detections": 1130,
+                    "late_detections": 0,
+                    "total_errored_detections": 1130,
+                    "missed_changes": 1,
+                    "TDR": 0.99,
+                    "MDR": 0.010000000000000009,
+                    "FDR": 0.919446704637917
+                }
+            ],
+            [
+                {
+                    "changes": 100,
+                    "detections": 1247,
+                    "true_detections": 99,
+                    "false_detections": 1148,
+                    "late_detections": 0,
+                    "total_errored_detections": 1148,
+                    "missed_changes": 1,
+                    "TDR": 0.99,
+                    "MDR": 0.010000000000000009,
+                    "FDR": 0.9206094627105053
+                },
+                {
+                    "changes": 100,
+                    "detections": 1246,
+                    "true_detections": 99,
+                    "false_detections": 1147,
+                    "late_detections": 0,
+                    "total_errored_detections": 1147,
+                    "missed_changes": 1,
+                    "TDR": 0.99,
+                    "MDR": 0.010000000000000009,
+                    "FDR": 0.920545746388443
+                },
+                {
+                    "changes": 100,
+                    "detections": 1245,
+                    "true_detections": 99,
+                    "false_detections": 1146,
+                    "late_detections": 0,
+                    "total_errored_detections": 1146,
+                    "missed_changes": 1,
+                    "TDR": 0.99,
+                    "MDR": 0.010000000000000009,
+                    "FDR": 0.9204819277108434
+                }
+            ]
+        ],
+        [
+            [
+                {
+                    "changes": 100,
+                    "detections": 7,
+                    "true_detections": 1,
+                    "false_detections": 0,
+                    "late_detections": 6,
+                    "total_errored_detections": 6,
+                    "missed_changes": 93,
+                    "TDR": 0.01,
+                    "MDR": 0.99,
+                    "FDR": 0.0
+                },
+                {
+                    "changes": 100,
+                    "detections": 19,
+                    "true_detections": 5,
+                    "false_detections": 3,
+                    "late_detections": 11,
+                    "total_errored_detections": 14,
+                    "missed_changes": 84,
+                    "TDR": 0.05,
+                    "MDR": 0.95,
+                    "FDR": 0.15789473684210525
+                },
+                {
+                    "changes": 100,
+                    "detections": 17,
+                    "true_detections": 6,
+                    "false_detections": 0,
+                    "late_detections": 11,
+                    "total_errored_detections": 11,
+                    "missed_changes": 83,
+                    "TDR": 0.06,
+                    "MDR": 0.94,
+                    "FDR": 0.0
+                }
+            ],
+            [
+                {
+                    "changes": 100,
+                    "detections": 42,
+                    "true_detections": 14,
+                    "false_detections": 6,
+                    "late_detections": 22,
+                    "total_errored_detections": 28,
+                    "missed_changes": 64,
+                    "TDR": 0.14,
+                    "MDR": 0.86,
+                    "FDR": 0.14285714285714285
+                },
+                {
+                    "changes": 100,
+                    "detections": 51,
+                    "true_detections": 23,
+                    "false_detections": 10,
+                    "late_detections": 18,
+                    "total_errored_detections": 28,
+                    "missed_changes": 59,
+                    "TDR": 0.23,
+                    "MDR": 0.77,
+                    "FDR": 0.19607843137254902
+                },
+                {
+                    "changes": 100,
+                    "detections": 50,
+                    "true_detections": 20,
+                    "false_detections": 9,
+                    "late_detections": 21,
+                    "total_errored_detections": 30,
+                    "missed_changes": 59,
+                    "TDR": 0.2,
+                    "MDR": 0.8,
+                    "FDR": 0.18
+                }
+            ],
+            [
+                {
+                    "changes": 100,
+                    "detections": 107,
+                    "true_detections": 46,
+                    "false_detections": 41,
+                    "late_detections": 20,
+                    "total_errored_detections": 61,
+                    "missed_changes": 34,
+                    "TDR": 0.46,
+                    "MDR": 0.54,
+                    "FDR": 0.38317757009345793
+                },
+                {
+                    "changes": 100,
+                    "detections": 107,
+                    "true_detections": 52,
+                    "false_detections": 38,
+                    "late_detections": 17,
+                    "total_errored_detections": 55,
+                    "missed_changes": 31,
+                    "TDR": 0.52,
+                    "MDR": 0.48,
+                    "FDR": 0.35514018691588783
+                },
+                {
+                    "changes": 100,
+                    "detections": 101,
+                    "true_detections": 47,
+                    "false_detections": 35,
+                    "late_detections": 19,
+                    "total_errored_detections": 54,
+                    "missed_changes": 34,
+                    "TDR": 0.47,
+                    "MDR": 0.53,
+                    "FDR": 0.3465346534653465
+                }
+            ]
+        ],
+        [
+            [
+                {
+                    "changes": 100,
+                    "detections": 10,
+                    "true_detections": 1,
+                    "false_detections": 0,
+                    "late_detections": 9,
+                    "total_errored_detections": 9,
+                    "missed_changes": 90,
+                    "TDR": 0.01,
+                    "MDR": 0.99,
+                    "FDR": 0.0
+                },
+                {
+                    "changes": 100,
+                    "detections": 12,
+                    "true_detections": 0,
+                    "false_detections": 0,
+                    "late_detections": 12,
+                    "total_errored_detections": 12,
+                    "missed_changes": 88,
+                    "TDR": 0.0,
+                    "MDR": 1.0,
+                    "FDR": 0.0
+                },
+                {
+                    "changes": 100,
+                    "detections": 13,
+                    "true_detections": 2,
+                    "false_detections": 2,
+                    "late_detections": 9,
+                    "total_errored_detections": 11,
+                    "missed_changes": 89,
+                    "TDR": 0.02,
+                    "MDR": 0.98,
+                    "FDR": 0.15384615384615385
+                }
+            ],
+            [
+                {
+                    "changes": 100,
+                    "detections": 42,
+                    "true_detections": 23,
+                    "false_detections": 5,
+                    "late_detections": 14,
+                    "total_errored_detections": 19,
+                    "missed_changes": 63,
+                    "TDR": 0.23,
+                    "MDR": 0.77,
+                    "FDR": 0.11904761904761904
+                },
+                {
+                    "changes": 100,
+                    "detections": 51,
+                    "true_detections": 18,
+                    "false_detections": 8,
+                    "late_detections": 25,
+                    "total_errored_detections": 33,
+                    "missed_changes": 57,
+                    "TDR": 0.18,
+                    "MDR": 0.8200000000000001,
+                    "FDR": 0.1568627450980392
+                },
+                {
+                    "changes": 100,
+                    "detections": 47,
+                    "true_detections": 17,
+                    "false_detections": 6,
+                    "late_detections": 24,
+                    "total_errored_detections": 30,
+                    "missed_changes": 59,
+                    "TDR": 0.17,
+                    "MDR": 0.83,
+                    "FDR": 0.1276595744680851
+                }
+            ],
+            [
+                {
+                    "changes": 100,
+                    "detections": 153,
+                    "true_detections": 80,
+                    "false_detections": 65,
+                    "late_detections": 8,
+                    "total_errored_detections": 73,
+                    "missed_changes": 12,
+                    "TDR": 0.8,
+                    "MDR": 0.19999999999999996,
+                    "FDR": 0.42483660130718953
+                },
+                {
+                    "changes": 100,
+                    "detections": 147,
+                    "true_detections": 82,
+                    "false_detections": 58,
+                    "late_detections": 7,
+                    "total_errored_detections": 65,
+                    "missed_changes": 11,
+                    "TDR": 0.82,
+                    "MDR": 0.18000000000000005,
+                    "FDR": 0.3945578231292517
+                },
+                {
+                    "changes": 100,
+                    "detections": 139,
+                    "true_detections": 77,
+                    "false_detections": 53,
+                    "late_detections": 9,
+                    "total_errored_detections": 62,
+                    "missed_changes": 14,
+                    "TDR": 0.77,
+                    "MDR": 0.22999999999999998,
+                    "FDR": 0.381294964028777
+                }
+            ]
+        ]
+    ]
+]

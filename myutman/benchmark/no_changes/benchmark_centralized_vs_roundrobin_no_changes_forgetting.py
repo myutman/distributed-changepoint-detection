@@ -7,6 +7,7 @@ from myutman.generation.generation import StillSampleGeneration
 from myutman.node_distribution.node_distribution import RoundrobinNodeDistribution
 from myutman.stand.stand import Stand
 from myutman.streaming_algo.window_algo import WindowStreamingAlgo
+from myutman.streaming_algo.window_forgetting_test import ForgettingTreapWindowTest
 
 
 def run(stands, generations, p_level):
@@ -33,7 +34,7 @@ def run(stands, generations, p_level):
         path = os.path.join(
             os.path.dirname(__file__),
             # f'../../results/centralized_vs_roundrobin_p={p_level}_nnodes={n_nodess}_no_changes_algo_20k_iter.json',
-            f'../../results/centralized_vs_roundrobin_p={p_level}_nnodes={n_nodess}_no_changes_algo_50k_iter.json',
+            f'../../results/centralized_vs_roundrobin_p={p_level}_nnodes={n_nodess}_no_changes_algo_forgetting_20k_iter.json',
         )
         with open(path, 'w') as output_file:
             json.dump(results, output_file, indent=4, ensure_ascii=False)
@@ -45,26 +46,30 @@ if __name__ == '__main__':
 
     windows = [(200, 200), (400, 400), (800, 800), (1600, 1600)]
 
-    n_iter = 50000
+    n_iter = 20000
+
+    kwargs_by_n_nodes = lambda n_nodes: {"window_sizes": windows, "n_iter": n_iter // n_nodes}
+    algo = lambda **kwargs: WindowStreamingAlgo(**kwargs, window_test_type=ForgettingTreapWindowTest)
+
 
     stand_centralized = Stand(
         n_nodes=1,
-        algo=WindowStreamingAlgo,
+        algo=algo,
         account1_node_distribution=RoundrobinNodeDistribution,
         account2_node_distribution=RoundrobinNodeDistribution,
         fuse=FuseForWindowAlgo,
-        account1_algo_kwargs={"window_sizes": windows, "n_iter": n_iter},
-        account2_algo_kwargs={"window_sizes": windows, "n_iter": n_iter}
+        account1_algo_kwargs=kwargs_by_n_nodes(1),
+        account2_algo_kwargs=kwargs_by_n_nodes(1)
     )
     stand_roundrobins = [
         Stand(
             n_nodes=n_nodes,
-            algo=WindowStreamingAlgo,
+            algo=algo,
             account1_node_distribution=RoundrobinNodeDistribution,
             account2_node_distribution=RoundrobinNodeDistribution,
             fuse=FuseForWindowAlgo,
-            account1_algo_kwargs={"window_sizes": windows, "n_iter": n_iter // n_nodes},
-            account2_algo_kwargs={"window_sizes": windows, "n_iter": n_iter // n_nodes},
+            account1_algo_kwargs=kwargs_by_n_nodes(n_nodes),
+            account2_algo_kwargs=kwargs_by_n_nodes(n_nodes),
         ) for n_nodes in n_nodess
     ]
 

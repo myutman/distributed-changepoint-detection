@@ -73,7 +73,7 @@ class WindowTest:
         pass
 
     @abc.abstractmethod
-    def get_stat(self):
+    def get_stat(self) -> Tuple[float, float]:
         pass
 
 
@@ -137,7 +137,7 @@ class WindowStreamingAlgo(StreamingAlgo):
             f'../precalc_qunatiles/precalced_quantiles_{n_iter}_iter_tmp.npy'
         ))[[[200, 400, 800, 1600].index(s) for s, _ in window_sizes]]
 
-        print(self.vec.shape)
+        # print(self.vec.shape)
 
         for i, _ in enumerate(window_sizes):
             self.vec[i, :] = self.rnd.permutation(self.vec[i, :])

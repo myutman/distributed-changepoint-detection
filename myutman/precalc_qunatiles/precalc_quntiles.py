@@ -8,7 +8,7 @@ from myutman.streaming_algo.window_algo import TreapWindowTest
 if __name__ == '__main__':
     sizes = [(200, 200), (400, 400), (800, 800), (1600, 1600)]
     niters_to_save = {
-        1250, 2500, 5000, 20000,
+        #1250, 2500, 5000, 20000,
         3125, 6250, 12500, 50000
     }
 
@@ -39,9 +39,9 @@ if __name__ == '__main__':
                 reference=rnd.uniform(0, 1, size=size1),
                 sliding=rnd.uniform(0, 1, size=size2)
             )
-            for iter in range(1, 20001):
+            for iter in range(1, 50001):
                 window_pair.add_point(rnd.uniform(0, 1))
                 if iter in niters_to_save:
                     vec_by_niters[iter][j].append(window_pair.get_stat())
         for iter in niters_to_save:
-            np.save(f'precalced_quantiles_{iter}_iter_with_burn-in.npy', vec_by_niters[iter])
+            np.save(f'precalced_quantiles_{iter}_iter_with_burn-in.npy', vec_by_niters[iter], allow_pickle=True)

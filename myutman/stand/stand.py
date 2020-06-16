@@ -97,7 +97,7 @@ class Stand:
         detected: List[int] = []
         detected_ids: List[Tuple[int, int]] = []
 
-        for i, ((account1_id, account2_id), point) in tqdm(enumerate(sample)):
+        for i, ((account1_id, account2_id), point) in enumerate(sample):
             detection = False
             detection_ids = [-1, -1]
             if n_account1s > 0:
@@ -119,14 +119,14 @@ class Stand:
                     detection_ids[1] = account2_id
                     for algo in nodes2[:, account2_id]:
                         algo.restart()
-            if i % 1000 == 0:
-                self.logger.debug(f"thresholds={fuse.thresholds}, stats={fuse.stat}")
+            #if i % 1000 == 0:
+            #    self.logger.debug(f"thresholds={fuse.thresholds}, stats={fuse.stat}")
             if detection:
                 detected.append(i)
                 detected_ids.append(tuple(detection_ids))
 
         error = calc_error(change_points, detected)#change_ids, detected, detected_ids)
-        output_json = {
+        """output_json = {
             "name": self.result_filename,
             "n_account1s": n_account1s,
             "n_account2s": n_account2s,
@@ -141,7 +141,7 @@ class Stand:
         output_filename = f"{self.result_filename}_{datetime.now().timestamp()}.json"
         #print(f"Result written to {output_filename}")
         #with open(output_filename, 'w') as output_file:
-        #    json.dump(output_json, output_file, ensure_ascii=False, indent=4)
+        #    json.dump(output_json, output_file, ensure_ascii=False, indent=4)"""
 
         return error
 

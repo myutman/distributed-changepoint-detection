@@ -1,0 +1,272 @@
+[
+    [
+        [
+            {
+                "changes": 0,
+                "detections": 13,
+                "true_detections": 0,
+                "false_detections": 13,
+                "late_detections": 0,
+                "total_errored_detections": 13,
+                "missed_changes": 0,
+                "TDR": null,
+                "MDR": null,
+                "FDR": 1.0,
+                "latency": null
+            },
+            {
+                "changes": 0,
+                "detections": 14,
+                "true_detections": 0,
+                "false_detections": 14,
+                "late_detections": 0,
+                "total_errored_detections": 14,
+                "missed_changes": 0,
+                "TDR": null,
+                "MDR": null,
+                "FDR": 1.0,
+                "latency": null
+            },
+            {
+                "changes": 0,
+                "detections": 17,
+                "true_detections": 0,
+                "false_detections": 17,
+                "late_detections": 0,
+                "total_errored_detections": 17,
+                "missed_changes": 0,
+                "TDR": null,
+                "MDR": null,
+                "FDR": 1.0,
+                "latency": null
+            },
+            {
+                "changes": 0,
+                "detections": 15,
+                "true_detections": 0,
+                "false_detections": 15,
+                "late_detections": 0,
+                "total_errored_detections": 15,
+                "missed_changes": 0,
+                "TDR": null,
+                "MDR": null,
+                "FDR": 1.0,
+                "latency": null
+            },
+            {
+                "changes": 0,
+                "detections": 14,
+                "true_detections": 0,
+                "false_detections": 14,
+                "late_detections": 0,
+                "total_errored_detections": 14,
+                "missed_changes": 0,
+                "TDR": null,
+                "MDR": null,
+                "FDR": 1.0,
+                "latency": null
+            }
+        ],
+        [
+            {
+                "changes": 0,
+                "detections": 5,
+                "true_detections": 0,
+                "false_detections": 5,
+                "late_detections": 0,
+                "total_errored_detections": 5,
+                "missed_changes": 0,
+                "TDR": null,
+                "MDR": null,
+                "FDR": 1.0,
+                "latency": null
+            },
+            {
+                "changes": 0,
+                "detections": 7,
+                "true_detections": 0,
+                "false_detections": 7,
+                "late_detections": 0,
+                "total_errored_detections": 7,
+                "missed_changes": 0,
+                "TDR": null,
+                "MDR": null,
+                "FDR": 1.0,
+                "latency": null
+            },
+            {
+                "changes": 0,
+                "detections": 6,
+                "true_detections": 0,
+                "false_detections": 6,
+                "late_detections": 0,
+                "total_errored_detections": 6,
+                "missed_changes": 0,
+                "TDR": null,
+                "MDR": null,
+                "FDR": 1.0,
+                "latency": null
+            },
+            {
+                "changes": 0,
+                "detections": 10,
+                "true_detections": 0,
+                "false_detections": 10,
+                "late_detections": 0,
+                "total_errored_detections": 10,
+                "missed_changes": 0,
+                "TDR": null,
+                "MDR": null,
+                "FDR": 1.0,
+                "latency": null
+            },
+            {
+                "changes": 0,
+                "detections": 7,
+                "true_detections": 0,
+                "false_detections": 7,
+                "late_detections": 0,
+                "total_errored_detections": 7,
+                "missed_changes": 0,
+                "TDR": null,
+                "MDR": null,
+                "FDR": 1.0,
+                "latency": null
+            }
+        ],
+        [
+            {
+                "changes": 0,
+                "detections": 7,
+                "true_detections": 0,
+                "false_detections": 7,
+                "late_detections": 0,
+                "total_errored_detections": 7,
+                "missed_changes": 0,
+                "TDR": null,
+                "MDR": null,
+                "FDR": 1.0,
+                "latency": null
+            },
+            {
+                "changes": 0,
+                "detections": 9,
+                "true_detections": 0,
+                "false_detections": 9,
+                "late_detections": 0,
+                "total_errored_detections": 9,
+                "missed_changes": 0,
+                "TDR": null,
+                "MDR": null,
+                "FDR": 1.0,
+                "latency": null
+            },
+            {
+                "changes": 0,
+                "detections": 5,
+                "true_detections": 0,
+                "false_detections": 5,
+                "late_detections": 0,
+                "total_errored_detections": 5,
+                "missed_changes": 0,
+                "TDR": null,
+                "MDR": null,
+                "FDR": 1.0,
+                "latency": null
+            },
+            {
+                "changes": 0,
+                "detections": 7,
+                "true_detections": 0,
+                "false_detections": 7,
+                "late_detections": 0,
+                "total_errored_detections": 7,
+                "missed_changes": 0,
+                "TDR": null,
+                "MDR": null,
+                "FDR": 1.0,
+                "latency": null
+            },
+            {
+                "changes": 0,
+                "detections": 5,
+                "true_detections": 0,
+                "false_detections": 5,
+                "late_detections": 0,
+                "total_errored_detections": 5,
+                "missed_changes": 0,
+                "TDR": null,
+                "MDR": null,
+                "FDR": 1.0,
+                "latency": null
+            }
+        ],
+        [
+            {
+                "changes": 0,
+                "detections": 8,
+                "true_detections": 0,
+                "false_detections": 8,
+                "late_detections": 0,
+                "total_errored_detections": 8,
+                "missed_changes": 0,
+                "TDR": null,
+                "MDR": null,
+                "FDR": 1.0,
+                "latency": null
+            },
+            {
+                "changes": 0,
+                "detections": 5,
+                "true_detections": 0,
+                "false_detections": 5,
+                "late_detections": 0,
+                "total_errored_detections": 5,
+                "missed_changes": 0,
+                "TDR": null,
+                "MDR": null,
+                "FDR": 1.0,
+                "latency": null
+            },
+            {
+                "changes": 0,
+                "detections": 13,
+                "true_detections": 0,
+                "false_detections": 13,
+                "late_detections": 0,
+                "total_errored_detections": 13,
+                "missed_changes": 0,
+                "TDR": null,
+                "MDR": null,
+                "FDR": 1.0,
+                "latency": null
+            },
+            {
+                "changes": 0,
+                "detections": 11,
+                "true_detections": 0,
+                "false_detections": 11,
+                "late_detections": 0,
+                "total_errored_detections": 11,
+                "missed_changes": 0,
+                "TDR": null,
+                "MDR": null,
+                "FDR": 1.0,
+                "latency": null
+            },
+            {
+                "changes": 0,
+                "detections": 6,
+                "true_detections": 0,
+                "false_detections": 6,
+                "late_detections": 0,
+                "total_errored_detections": 6,
+                "missed_changes": 0,
+                "TDR": null,
+                "MDR": null,
+                "FDR": 1.0,
+                "latency": null
+            }
+        ]
+    ]
+]

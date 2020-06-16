@@ -1,13 +1,14 @@
 import abc
 import os
+from threading import Lock
 from typing import List, Union, Tuple
 
 import numpy as np
 
-from myutman.streaming_algo.streaming_algo import StreamingAlgo
-
 
 class Fuse:
+    lock = Lock()
+
     def __init__(self, p: float, n_nodes: int):
         self.p = p
         self.n_nodes = n_nodes
@@ -21,7 +22,6 @@ class Fuse:
     def __call__(self, stats: Union[List[List[float]], np.ndarray]) -> bool:
         return self.fuse(stats)
 
-
 class FuseForWindowAlgo(Fuse):
     EPS = 1e-9
 
@@ -29,10 +29,13 @@ class FuseForWindowAlgo(Fuse):
         super(FuseForWindowAlgo, self).__init__(p, n_nodes)
         self.count = 0
         rnd = np.random.RandomState(0)
-        vec = np.load(os.path.join(
-            os.path.dirname(__file__),
-            f'../precalc_qunatiles/precalced_quantiles_{n_iter}_iter_with_burn-in.npy'
-        ))[[[200, 400, 800, 1600].index(s) for s, _ in window_sizes]]
+        with Fuse.lock:
+            print(f'Thread {__name__} acquired lock')
+            vec = np.load(os.path.join(
+                os.path.dirname(__file__),
+                f'../precalc_qunatiles/precalced_quantiles_{n_iter}_iter_with_burn-in.npy'
+            ))[[[200, 400, 800, 1600].index(s) for s, _ in window_sizes]][:,:]
+        print(f'Thread {__name__} released lock')
         vecs = [
             [rnd.permutation(sub_vec) for sub_vec in vec] for _ in range(n_nodes)
         ]
@@ -45,11 +48,11 @@ class FuseForWindowAlgo(Fuse):
         ans = np.any(self.thresholds < self.stat - FuseForWindowAlgo.EPS)
 
         # TODO: remove debug
-        if ans:
-            win_sizes = [size for size, threshold, stat in zip([200, 400, 800, 1600], self.thresholds, self.stat) if stat > threshold]
-            print(f"detected by sizes {win_sizes}")
-            if len(win_sizes) == 1:
-                print("wow")
+        #if ans:
+        #    win_sizes = [size for size, threshold, stat in zip([200, 400, 800, 1600], self.thresholds, self.stat) if stat > threshold]
+            #print(f"detected by sizes {win_sizes}")
+            #if len(win_sizes) == 1:
+            #    print("wow")
         return ans
 
 
